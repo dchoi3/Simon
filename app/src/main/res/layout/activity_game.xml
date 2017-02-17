@@ -11,48 +11,56 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.danielchoi.simon.GameActivity">
 
+
     <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:weightSum="2"
-        android:orientation="vertical">
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="0dp"
+            android:weightSum="2">
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 android:id="@+id/green_imageButton"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                android:layout_weight="1"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:layout_weight="1" />
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 android:id="@+id/blue_imageButton"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                android:layout_weight="1"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:layout_weight="1" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="0sp"
+            android:weightSum="2">
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 android:id="@+id/yellow_imageButton"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                android:layout_weight="1" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"/>
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 android:id="@+id/red_imageButton"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                android:layout_weight="1" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"/>
         </TableRow>
 
         <TableRow
