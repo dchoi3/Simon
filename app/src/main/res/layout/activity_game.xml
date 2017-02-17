@@ -13,13 +13,13 @@
 
     <TableLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:weightSum="2"
         android:orientation="vertical">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content" >
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
@@ -38,14 +38,13 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content" >
 
             <ImageButton
                 app:srcCompat="@android:drawable/ic_dialog_email"
                 android:id="@+id/yellow_imageButton"
                 android:layout_width="190dp"
                 android:layout_height="190dp"
-                android:layout_marginBottom="142dp"
                 android:layout_weight="1" />
 
             <ImageButton
@@ -54,6 +53,17 @@
                 android:layout_width="190dp"
                 android:layout_height="190dp"
                 android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:text="Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_button" />
         </TableRow>
 
     </TableLayout>
