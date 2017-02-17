@@ -9,15 +9,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.danielchoi.simon.GameActivity">
+    tools:context="com.danielchoi.simon.GameActivity"
+    android:background="@drawable/background">
 
+
+    <ImageView
+        android:layout_width="120dp"
+        app:srcCompat="@drawable/center"
+        android:id="@+id/imageView"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:text="00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/score_textView"
+        android:textSize="60sp"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
     <TableLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true">
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tableLayout">
 
         <TableRow
             android:layout_width="match_parent"
@@ -25,20 +45,26 @@
             android:weightSum="2">
 
             <ImageButton
-                app:srcCompat="@android:drawable/ic_dialog_email"
+                android:src="@drawable/green"
+                android:background="#00000000"
                 android:id="@+id/green_imageButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                 />
 
             <ImageButton
-                app:srcCompat="@android:drawable/ic_dialog_email"
+                android:src="@drawable/blue"
+                android:background="#00000000"
                 android:id="@+id/blue_imageButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
-                android:layout_weight="1" />
+                android:cropToPadding="false" />
         </TableRow>
 
         <TableRow
@@ -47,33 +73,36 @@
             android:weightSum="2">
 
             <ImageButton
-                app:srcCompat="@android:drawable/ic_dialog_email"
+                android:src="@drawable/yellow"
+                android:background="#00000000"
                 android:id="@+id/yellow_imageButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"/>
 
             <ImageButton
-                app:srcCompat="@android:drawable/ic_dialog_email"
+                android:src="@drawable/red"
+                android:background="#00000000"
                 android:id="@+id/red_imageButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"/>
         </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/play_button" />
-        </TableRow>
-
     </TableLayout>
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/play_button"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/tableLayout"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-medium" />
+
 
 </RelativeLayout>

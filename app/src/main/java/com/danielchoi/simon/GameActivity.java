@@ -1,10 +1,12 @@
 package com.danielchoi.simon;
 
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.Random;
 import java.util.Vector;
@@ -23,7 +25,11 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //try to use this font.
+        TextView tx = (TextView)findViewById(R.id.score_textView);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
 
+        tx.setTypeface(custom_font);
         Button b = (Button) findViewById(R.id.play_button);
         b.setOnClickListener(this);
         for(int id : colors){
