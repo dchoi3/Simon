@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/gameMode1"
+        android:title="GameMode I"
+        />
+    <item
+        android:id="@+id/gameMode2"
+        android:title="GameMode II"
+        />
+    <item
+        android:id="@+id/gameMode3"
+        android:title="GameMode III"
+        />
+    <item
+        android:id="@+id/actionRestart"
+        android:title="Restart"
+        />
+    <item
+        android:id="@+id/actionQuit"
+        android:title="Quit"
+        />
+
+</menu>
