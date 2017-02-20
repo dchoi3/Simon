@@ -13,6 +13,7 @@ import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -24,17 +25,17 @@ import java.util.Set;
 import java.util.Vector;
 
 public class GameActivity extends AppCompatActivity
-        implements View.OnClickListener,PopupMenu.OnMenuItemClickListener{
+        implements View.OnTouchListener,PopupMenu.OnMenuItemClickListener{
 
     //***********************************************************DECLARE*VARIABLES*
     Vector<Integer> userPattern,simonPattern;
     private int gameMode, count, score, flashSpeed;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
-    private FlashPressed fPressed;
     private CountDown countDown;
     private SoundPool soundPool;
     private Set<Integer> soundsLoaded;
+    private boolean lockButtons;
     public Typeface customFont;
     public TextView scoreTextView;
     public Vibrator vb;
@@ -48,6 +49,7 @@ public class GameActivity extends AppCompatActivity
         simonPattern = new Vector<>();
         userPattern = new Vector<>();
         flashSpeed = 1000;
+        lockButtons = true;
 
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -62,13 +64,13 @@ public class GameActivity extends AppCompatActivity
         scoreTextView.setTypeface(customFont);
 
         gButton = (ImageButton) findViewById(R.id.green_imageButton);
-        gButton.setOnClickListener(this);
+        gButton.setOnTouchListener(this);
         bButton = (ImageButton) findViewById(R.id.blue_imageButton);
-        bButton.setOnClickListener(this);
+        bButton.setOnTouchListener(this);
         yButton = (ImageButton) findViewById(R.id.yellow_imageButton);
-        yButton.setOnClickListener(this);
+        yButton.setOnTouchListener(this);
         rButton = (ImageButton) findViewById(R.id.red_imageButton);
-        rButton.setOnClickListener(this);
+        rButton.setOnTouchListener(this);
 
 
     }//Initialize Variables.
@@ -135,6 +137,7 @@ public class GameActivity extends AppCompatActivity
     }//Called from simonsTurn
 
     private void chooseGameMode(){
+
         if(gameMode == 2){
             setVariables();
             toast("Get Ready, Game Mode II");
@@ -156,20 +159,12 @@ public class GameActivity extends AppCompatActivity
         }
     }//Called from onCreate & Menu
 
-    private void lockButtons(){// Function to stop user from clicking buttons while simon is active
-        for(int id : colorButtons){
-            ImageButton ib = (ImageButton) findViewById(id);
-            ib.setClickable(false);
-        }
-    }//Called by simonsTurn
-
     private void play(){
         simonsTurn();
     }//Called by onCreate
 
     private void simonsTurn() {
         //toast("Simon's Turn");
-        lockButtons(); // Stop user from clicking buttons until simon is finished
         simonPattern.add(addPattern());//add a random pattern
         flash = new FlashSimon();
         flash.execute();
@@ -191,7 +186,7 @@ public class GameActivity extends AppCompatActivity
     }
 
     private void usersTurn(){
-        unLockButtons();
+        lockButtons = false;
 
     }//Called from FLASH after thread Completes
 
@@ -244,20 +239,6 @@ public class GameActivity extends AppCompatActivity
 
     } //Flashes Simon's Pattern
 
-    class FlashPressed extends AsyncTask<Void, Void, Void>{
-
-        final int bPressed;
-        FlashPressed(int x){
-            bPressed = x;
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-
-            return null;
-        }
-    }//Called when button pressed
-
     class CountDown extends AsyncTask<Void, String, Void>{
 
         int cdSound = soundID[4];
@@ -280,6 +261,7 @@ public class GameActivity extends AppCompatActivity
                     if (i == 0) {
                         display = "go";
                         cdSound = soundID[5];
+                        vb.vibrate(250);
                     } else display = "0" + i;
 
                     publishProgress(display);
@@ -308,23 +290,59 @@ public class GameActivity extends AppCompatActivity
         }
     }//Beginning Countdown
 
-    //**************************************************************UTILITY*&*MENU*
+    //*************************************************FUNCTIONALITY*UTILITY*&*MENU*
 
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == colorButtons[0]){//green
-            vb.vibrate(10);
-            fPressed = new FlashPressed(0);
-            fPressed.execute();
-        }else if(view.getId() == colorButtons[1]){
-            vb.vibrate(10);
-        }else if(view.getId() == colorButtons[2]){
-            vb.vibrate(10);
-        }else if(view.getId() == colorButtons[3]){
-            vb.vibrate(10);
+    private void playerPress(int id){
+        vb.vibrate(10);
+        ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
+        flash.setImageResource(pressedDrawable[id]);
+        if(soundsLoaded.contains(soundID[id])){
+            soundPool.play(soundID[id],1.0f, 1.0f, 0, 0, 1.0f);
         }
 
-    }//onClicks
+    }//OnPressDown
+
+    private void playerUp(int id){
+        ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
+        flash.setImageResource(colorDrawable[id]);
+    }//OnPressUp
+
+    private void toast(String s){
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    }//Called from anywhere
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        if (view.getId() == colorButtons[0] && !lockButtons) {//green
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                playerPress(0);
+            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                playerUp(0);
+            }
+
+        } else if (view.getId() == colorButtons[1] && !lockButtons) {
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                playerPress(1);
+            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                playerUp(1);
+            }
+        } else if (view.getId() == colorButtons[2] && !lockButtons) {
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                playerPress(2);
+            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                playerUp(2);
+            }
+        } else if (view.getId() == colorButtons[3] && !lockButtons) {
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                playerPress(3);
+            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                playerUp(3);
+            }
+        }
+
+        return false;
+    }//onTouch
 
     @Override
     public boolean onMenuItemClick(MenuItem item)  {
@@ -364,11 +382,6 @@ public class GameActivity extends AppCompatActivity
         inflater.inflate(R.menu.menu, popup.getMenu());
         popup.show();
     }//PopUpMenu
-
-    private void toast(String s){
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-    }//Called from anywhere
-
 
 
 }
