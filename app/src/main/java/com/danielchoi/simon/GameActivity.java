@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -29,7 +30,7 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************DECLARE*VARIABLES*
     Vector<Integer> userPattern,simonPattern;
-    private int gameMode, count, score, flashSpeed;
+    private int gameMode, count, score, flashSpeed, hintCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -44,12 +45,14 @@ public class GameActivity extends AppCompatActivity
     //*********************************************************Initialize*Variables*
 
     private void setVariables(){
-        count = 1;
+        count = 0;
         score = 0;
+        hintCount = 3;
         simonPattern = new Vector<>();
         userPattern = new Vector<>();
         flashSpeed = 1000;
         lockButtons = true;
+        findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
 
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -71,6 +74,8 @@ public class GameActivity extends AppCompatActivity
         yButton.setOnTouchListener(this);
         rButton = (ImageButton) findViewById(R.id.red_imageButton);
         rButton.setOnTouchListener(this);
+
+        findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
 
 
     }//Initialize Variables.
@@ -170,13 +175,6 @@ public class GameActivity extends AppCompatActivity
         flash.execute();
     }//Called from onCreate
 
-    private void unLockButtons(){// Function to let user click buttons when simon is inactive
-        for(int id : colorButtons){
-            ImageButton ib = (ImageButton) findViewById(id);
-            ib.setClickable(true);
-        }
-    }//Called from userTurn
-
     private void updateScore(){
         String scoreString;
         if(score<10) scoreString = "0"+score;
@@ -187,6 +185,7 @@ public class GameActivity extends AppCompatActivity
 
     private void usersTurn(){
         lockButtons = false;
+        //Should allow "counts" amount of input here. On click needs to be lock after input
 
     }//Called from FLASH after thread Completes
 
@@ -226,8 +225,6 @@ public class GameActivity extends AppCompatActivity
             }
 
             }//for
-
-
             return null;
         }//doiInBackground
 
@@ -261,7 +258,6 @@ public class GameActivity extends AppCompatActivity
                     if (i == 0) {
                         display = "go";
                         cdSound = soundID[5];
-                        vb.vibrate(250);
                     } else display = "0" + i;
 
                     publishProgress(display);
@@ -292,6 +288,22 @@ public class GameActivity extends AppCompatActivity
 
     //*************************************************FUNCTIONALITY*UTILITY*&*MENU*
 
+    class HintButtonListener implements View.OnClickListener{
+        @Override
+        public void onClick(View view) {
+            if(hintCount >= 0){
+                hintCount--;
+                flash = new FlashSimon();
+                flash.execute();
+                toastHigh("Hints Remaining: "+hintCount);
+            }
+            if(hintCount == 0){
+                findViewById(R.id.hint_imageButton).setVisibility(View.INVISIBLE);
+            }
+
+        }
+    }
+
     private void playerPress(int id){
         vb.vibrate(10);
         ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
@@ -299,16 +311,22 @@ public class GameActivity extends AppCompatActivity
         if(soundsLoaded.contains(soundID[id])){
             soundPool.play(soundID[id],1.0f, 1.0f, 0, 0, 1.0f);
         }
-
     }//OnPressDown
 
     private void playerUp(int id){
         ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
         flash.setImageResource(colorDrawable[id]);
+        Log.i("Button=", " "+id);
     }//OnPressUp
 
     private void toast(String s){
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    }//Called from anywhere
+
+    private void toastHigh(String s){
+        Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP, 0, 50);
+        toast.show();
     }//Called from anywhere
 
     @Override

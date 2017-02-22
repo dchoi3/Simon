@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_about"
     android:layout_width="match_parent"
@@ -8,18 +8,98 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.danielchoi.simon.AboutActivity"
     android:background="@drawable/background">
 
     <TextView
         android:text="deuelopers"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:textAlignment="center"
         android:id="@+id/developers"
-        android:textSize="36sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="sans-serif"
-        android:textColor="#00FF00"/>
-</RelativeLayout>
+        android:textSize="40sp"
+        android:textColor="#00FF00" />
+
+    <TextView
+        android:text="Daniel Choi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/daniel"
+        android:textColor="#0000FF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginStart="25sp" />
+
+    <TextView
+        android:text="Information Systems \nw/Mobile software technology"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/danielInfo"
+        android:layout_gravity="center"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="30sp"/>
+
+    <TextView
+        android:text="Charles Fannin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/charles"
+        android:textColor="#FF0000"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginStart="25dp"/>
+
+    <TextView
+        android:text="Internet and web technology \nw/Mobile software technology"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/charlesInfo"
+        android:layout_gravity="center"
+        android:layout_marginStart="50dp"
+        android:paddingBottom="30dp" />
+
+
+    <TextView
+        android:text="John Schmitt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/john"
+        android:textColor="#008000"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginStart="25dp"/>
+    <TextView
+        android:text="Networking\nw/Mobile software technology"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/johnInfo"
+        android:layout_gravity="center"
+        android:layout_marginStart="50dp"
+        android:paddingBottom="30dp" />
+
+    <TextView
+        android:text="FonT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:id="@+id/font"
+        android:textSize="30sp"
+        android:textColor="#00FF00"
+        android:textAlignment="center" />
+
+    <TextView
+        android:text="Name: Digital Dismay\nDesigner: Andrew McCluskey\nCompany: Nal Games\nUsage: DonationWare"
+        android:layout_width="197dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/fontDescription"/>
+
+
+
+</LinearLayout>

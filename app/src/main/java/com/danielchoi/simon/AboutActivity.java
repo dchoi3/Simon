@@ -13,6 +13,8 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         Typeface tf = Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
         TextView tv = (TextView) findViewById(R.id.developers);
+        TextView fv = (TextView) findViewById(R.id.font);
         tv.setTypeface(tf);
+        fv.setTypeface(tf);
     }
 }
