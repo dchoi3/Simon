@@ -429,7 +429,7 @@ public class GameActivity extends AppCompatActivity
         } else {
             Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
         }
-        choiceCount = 0; // Reset choice counter to prepare for next found.
+        choiceCount = 0; // Reset choice counter to prepare for next round.
     }
 
 }
