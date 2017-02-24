@@ -411,6 +411,9 @@ public class GameActivity extends AppCompatActivity
         popup.show();
     }//PopUpMenu
 
+    /**
+     * seqCompare method does a simple check to see if user choice matches simon's pattern.
+     */
     public void seqCompare() {
         if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
             Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
