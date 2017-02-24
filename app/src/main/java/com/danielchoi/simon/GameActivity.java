@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************DECLARE*VARIABLES*
     Vector<Integer> userPattern,simonPattern;
+    private int userChoice;
     private int gameMode, count, score, flashSpeed, hintCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
@@ -41,6 +43,7 @@ public class GameActivity extends AppCompatActivity
     public TextView scoreTextView;
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
+    public int choiceCount = 0; // The number of times the user chooses a color.
 
     //*********************************************************Initialize*Variables*
 
@@ -56,10 +59,14 @@ public class GameActivity extends AppCompatActivity
 
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton, R.id.red_imageButton}; // Color button ids
+        colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton,
+            R.id.red_imageButton}; // Color button ids
         colorDrawable = new int[]{R.drawable.green,R.drawable.blue,R.drawable.yellow,R.drawable.red};
-        pressedDrawable = new int[]{R.drawable.greenpressed ,R.drawable.bluepressed,R.drawable.yellowpressed,R.drawable.redpressed};
-        soundID = new int []{soundPool.load(this,R.raw.greennote,1), soundPool.load(this,R.raw.bluenote,1), soundPool.load(this,R.raw.yellownote,1),soundPool.load(this,R.raw.rednote,1),soundPool.load(this,R.raw.countdown,1),soundPool.load(this,R.raw.go,1)};
+        pressedDrawable = new int[]{R.drawable.greenpressed ,R.drawable.bluepressed,R.drawable.yellowpressed,
+            R.drawable.redpressed};
+        soundID = new int []{soundPool.load(this,R.raw.greennote,1), soundPool.load(this,R.raw.bluenote,1),
+            soundPool.load(this,R.raw.yellownote,1),soundPool.load(this,R.raw.rednote,1),
+            soundPool.load(this,R.raw.countdown,1),soundPool.load(this,R.raw.go,1)};
 
         customFont= Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
 
@@ -137,7 +144,7 @@ public class GameActivity extends AppCompatActivity
         Random rand = new Random();
         int index = rand.nextInt(4);
         count++;
-        Log.i("Random: ", ""+index);
+        Log.i("Random ", ""+index);
         return index;
     }//Called from simonsTurn
 
@@ -221,7 +228,7 @@ public class GameActivity extends AppCompatActivity
                 });
 
             } catch (InterruptedException e) {
-                Log.i("THREAD=====","FLASH was interupted");
+                Log.i("THREAD=====","FLASH was interrupted");
             }
 
             }//for
@@ -317,6 +324,9 @@ public class GameActivity extends AppCompatActivity
         ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
         flash.setImageResource(colorDrawable[id]);
         Log.i("Button=", " "+id);
+        userChoice = id;
+        seqCompare();
+        choiceCount++;
     }//OnPressUp
 
     private void toast(String s){
@@ -401,5 +411,22 @@ public class GameActivity extends AppCompatActivity
         popup.show();
     }//PopUpMenu
 
+    public void seqCompare() {
+        if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
+            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+            new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        play();
+                    }
+                },
+                1500 // Delay in ms.
+            );
+        } else {
+            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+        }
+        choiceCount = 0; // Reset choice counter to prepare for next found.
+    }
 
 }
