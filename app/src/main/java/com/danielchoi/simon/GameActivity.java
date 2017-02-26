@@ -31,8 +31,7 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************DECLARE*VARIABLES*
     Vector<Integer> userPattern,simonPattern;
-    private int userChoice;
-    private int gameMode, count, score, flashSpeed, hintCount;
+    private int gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -43,7 +42,7 @@ public class GameActivity extends AppCompatActivity
     public TextView scoreTextView;
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
-    public int choiceCount = 0; // The number of times the user chooses a color.
+    public static final int activityRef = 2000;
 
     //*********************************************************Initialize*Variables*
 
@@ -55,8 +54,7 @@ public class GameActivity extends AppCompatActivity
         userPattern = new Vector<>();
         flashSpeed = 1000;
         lockButtons = true;
-        findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
-
+        choiceCount = 0; // The number of times the user chooses a color.
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton,
@@ -82,7 +80,9 @@ public class GameActivity extends AppCompatActivity
         rButton = (ImageButton) findViewById(R.id.red_imageButton);
         rButton.setOnTouchListener(this);
 
+        findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
         findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
+        findViewById(R.id.setScore_button).setOnClickListener(new SetHighScore());
 
 
     }//Initialize Variables.
@@ -310,6 +310,17 @@ public class GameActivity extends AppCompatActivity
 
         }
     }
+    class SetHighScore implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            Intent scoreIntent = new Intent(getApplicationContext(), ScoreActivity.class);
+            scoreIntent.putExtra("score", score);
+            scoreIntent.putExtra("calling-Activity", activityRef);
+            startActivity(scoreIntent);
+
+        }
+    }
 
     private void playerPress(int id){
         vb.vibrate(10);
@@ -414,6 +425,7 @@ public class GameActivity extends AppCompatActivity
     public void seqCompare() {
         if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
             Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+            score++;
             new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override

@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
+    static final int activityRef = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         b.setTypeface(tf);
         b.setOnClickListener(this);
 
+        Button s = (Button) findViewById(R.id.score_button);
+        s.setTypeface(tf);
+        s.setOnClickListener(this);
+
 
     }
 
@@ -36,12 +42,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             vb.vibrate(10);
             Intent startIntent = new Intent(getApplicationContext(), GameActivity.class);
             startActivity(startIntent);
-        }else{
-
+        }else if(view.getId() == R.id.score_button){
             Vibrator vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vb.vibrate(10);
-            Intent startIntent = new Intent(getApplicationContext(), AboutActivity.class);
-            startActivity(startIntent);
+            Intent scoreIntent = new Intent(getApplicationContext(), ScoreActivity.class);
+            scoreIntent.putExtra("calling-Activity", activityRef);
+            startActivity(scoreIntent);
+        }else{
+            Vibrator vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vb.vibrate(10);
+            Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
+            startActivity(aboutIntent);
         }
     }
 }
