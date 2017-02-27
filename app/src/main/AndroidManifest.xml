@@ -24,7 +24,8 @@
         <activity android:name=".AboutActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ScoreActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AlertDialog"/>
     </application>
 
 </manifest>
