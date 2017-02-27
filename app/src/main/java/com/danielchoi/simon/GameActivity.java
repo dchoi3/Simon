@@ -30,7 +30,7 @@ public class GameActivity extends AppCompatActivity
         implements View.OnTouchListener,PopupMenu.OnMenuItemClickListener{
 
     //***********************************************************DECLARE*VARIABLES*
-    Vector<Integer> userPattern,simonPattern;
+    Vector<Integer> userPattern = new Vector<>(),simonPattern = new Vector<>();
     private int tempo, gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
@@ -50,8 +50,8 @@ public class GameActivity extends AppCompatActivity
         count = 0;
         score = 0;
         hintCount = 3;
-        simonPattern = new Vector<>();
-        userPattern = new Vector<>();
+        simonPattern.clear();
+        userPattern.clear();
         flashSpeed = 1000;
         tempo = flashSpeed;
         lockButtons = true;
@@ -155,8 +155,8 @@ public class GameActivity extends AppCompatActivity
     }//Called from simonsTurn
     //Pattern for game mode 2 (Random Pattern: Normal difficulty)
     private int addPattern2(){// Function that makes simon choose random colors
-        Random rand = new Random();
-        int index = rand.nextInt(19);
+        Random rand = new Random(System.nanoTime());
+        int index = rand.nextInt(100);
         index = index % 4;
         count++;
         Log.i("Random ", ""+index);
