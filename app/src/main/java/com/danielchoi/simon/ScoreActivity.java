@@ -44,31 +44,25 @@ public class ScoreActivity extends AppCompatActivity {
     private final String SCORE_FILENAME = "simonScores.txt";
     private final String DELIMITER = "<õ@Scores@õ>";
     private String name,score, place;
+    private final String ACTIVITYKEY = "calling-Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
-        TextView tv = (TextView) findViewById(R.id.highScoreTv);
-        tv.setTypeface(tf);
-
-        lv = (ListView) findViewById(R.id.scoreListView);
-        scoresList = readData();
-        scoreAdapter = new ScoreAdapter(getApplicationContext(), R.layout.score_row, scoresList);
-        lv.setAdapter(scoreAdapter);
-
-
-       int callingActivity = getIntent().getIntExtra("calling-Activity", 0);
-        if(callingActivity == 2000 ){//Home
-            enterUserName();
-        }
+        setTypeface();
+        setListView();
+        checkCallingActivity();
     }
 
-    /**************************************************
-     * This checks the score file and fills up the list.
-     * @return
+
+    //****************************************************Read & Write Files*
+    /**
+     * This reads the data from files and places them
+     * in a List object.
+     * Called by setListView()
+     * @return the List of scores
      */
     private List<Scores> readData(){
 
@@ -103,8 +97,10 @@ public class ScoreActivity extends AppCompatActivity {
 
     }
 
-    /**************************************************
-     * This write the scores to a file
+    /**
+     * This writes the list of scores to a file.
+     * It is written when a new user name is inputted
+     * Called by set scores
      */
     private void writeData(){
         try {
@@ -130,7 +126,17 @@ public class ScoreActivity extends AppCompatActivity {
         }
     }
 
+    //****************************************************Handle new scores*
+
+    /**
+     * Creates a view object to reference the Custom alertDialog layout.
+     * Accepts the user input by EditText
+     * Calls setScore
+     * Called by CheckCallingActivity
+     */
     private void enterUserName(){
+        //TODO Make a default text if left blank
+
         View view = (LayoutInflater.from(this)).inflate(R.layout.enter_name, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText et= (EditText) view.findViewById(R.id.editText);
@@ -154,6 +160,14 @@ public class ScoreActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Gets score from GameActivity Intent
+     * Gets name from enterUserName which is a global Variable
+     * Calls sortScore to find new place in highscore
+     * Gets place from sortScore global variable.
+     * Create new Score object and added to the list
+     * Calls write Data to save to file
+     */
     private void setScores(){
         int temp = getIntent().getIntExtra("score", 0);
         score = Integer.toString(temp);
@@ -165,24 +179,79 @@ public class ScoreActivity extends AppCompatActivity {
         writeData();
     }
 
+    /**
+     * Compare all score values from List
+     * Reposition the list.
+     * Number them and reinsert the List to file.
+     * Note: place, score, and name are all strings
+     * Called my setScores
+     */
     private void sortScores(){
 
 
     }
 
+    //************************************************Functionaliy & Utility*
+    /**
+     * This simply sets the type face.
+     * Called by onCreate()
+     */
+    private void setTypeface(){
+        Typeface tf = Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
+        TextView tv = (TextView) findViewById(R.id.highScoreTv);
+        tv.setTypeface(tf);
+    }
+
+    /**
+     * onBackPressed()
+     * So that it returns to home page instead of game
+     */
     @Override
     public void onBackPressed() {
         Intent aboutIntent = new Intent(this, HomeActivity.class);
         startActivity(aboutIntent);
     }
 
+    /**
+     * This checks if the calling activity is the GameActivity
+     * If so it calls the enterUserName()
+     * Called by onCreate
+     */
+    public void checkCallingActivity(){
+        int callingActivity = getIntent().getIntExtra(ACTIVITYKEY, 0);
+
+        if(callingActivity == 2000 ){//Home
+            enterUserName();
+        }
+
+    }
+
+    /**
+     * This sets the view on startup
+     * It gets the id of the listview
+     * Calls readData() which returns a List from file
+     * Calls the new adapter which sets the List objects to it's view
+     * Sets the adapter to the view
+     */
+    private void setListView(){
+        lv = (ListView) findViewById(R.id.scoreListView);
+        scoresList = readData();
+        scoreAdapter = new ScoreAdapter(getApplicationContext(), R.layout.score_row, scoresList);
+        lv.setAdapter(scoreAdapter);
+    }
+    //*******************************************************Custom Adapter*
+    /**
+     * A class that extends ArrayAdapter
+     * This takes each List objects(scores) and places them
+     * in the correct Textview of the Custom row layout(score_row.xml)
+     */
     public class ScoreAdapter extends ArrayAdapter{
 
         private List<Scores> sL;
         private LayoutInflater inflater;
         private int resource;
 
-        public ScoreAdapter(Context context, int resource, List objects){
+        ScoreAdapter(Context context, int resource, List objects){
             super(context, resource, objects);
 
             this.resource = resource;
@@ -190,6 +259,7 @@ public class ScoreActivity extends AppCompatActivity {
             inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         }
 
+        @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -206,6 +276,6 @@ public class ScoreActivity extends AppCompatActivity {
 
 return convertView;
         }
-        }
+    }
 
 }
