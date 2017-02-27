@@ -31,7 +31,7 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************DECLARE*VARIABLES*
     Vector<Integer> userPattern,simonPattern;
-    private int gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
+    private int tempo, gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -53,6 +53,7 @@ public class GameActivity extends AppCompatActivity
         simonPattern = new Vector<>();
         userPattern = new Vector<>();
         flashSpeed = 1000;
+        tempo = flashSpeed;
         lockButtons = true;
         choiceCount = 0; // The number of times the user chooses a color.
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -257,9 +258,12 @@ public class GameActivity extends AppCompatActivity
                 if(soundsLoaded.contains(soundID[y])){
                     soundPool.play(soundID[y],1.0f, 1.0f, 0, 0, 1.0f);
                 }
-                Thread.sleep(flashSpeed);
-
-                runOnUiThread(new Runnable() {
+                    // Increase Tempo
+                    if(tempo > 320) {
+                        tempo -= 20;
+                    }
+                    Thread.sleep(tempo);
+                    runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                     ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
@@ -267,11 +271,14 @@ public class GameActivity extends AppCompatActivity
                     }
                 });
 
-            } catch (InterruptedException e) {
-                Log.i("THREAD=====","FLASH was interrupted");
-            }
+                } catch (InterruptedException e) {
+                    Log.i("THREAD=====","FLASH was interrupted");
+                }
 
             }//for
+            //**************************************************Debugging Tempo*
+            //Log.i("*******", "Tempo is : " + tempo);
+            //Log.i("*******", "Count is : " + count);
             return null;
         }//doiInBackground
 
