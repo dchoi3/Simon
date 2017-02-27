@@ -154,9 +154,14 @@ public class GameActivity extends AppCompatActivity
         Log.i("Random: ", ""+index);
         return index;
     }//Called from simonsTurn
-    private int addPattern3(){// Function that makes simon choose random colors and users chooses in reverse
-        Random rand = new Random();
-        int index = rand.nextInt(4);
+    private int addPattern3(){// Function that makes sets simons predetermined colors and users chooses in reverse
+        int index;
+        if((count * count) % 11 > 5){
+            index = (count * count * 3) % 4;
+        }else{
+            index = (count * count * count) % 3;
+        }
+
         count++;
         Log.i("Random: ", ""+index);
         return index;
@@ -199,7 +204,7 @@ public class GameActivity extends AppCompatActivity
             flash = new FlashSimon();
             flash.execute();
         }else if(gameMode ==3){
-            simonPattern.add(addPattern3());//add a reverse pattern: HARD
+            simonPattern.add(addPattern3());//add a predetermined pattern that will be checked in reverse: HARD
             flash = new FlashSimon();
             flash.execute();
         }else{
