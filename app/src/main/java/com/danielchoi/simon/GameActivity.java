@@ -139,15 +139,41 @@ public class GameActivity extends AppCompatActivity
     }
 
     //***********************************************************************SIMON*
+    //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
+    private int addPattern1(){// Function that makes simon choose predetermined colors
+        int index;
+            if((count * count) % 11 > 5){
+                index = (count * count * 3) % 4;
+            }else{
+                index = (count * count * count) % 3;
+            }
 
-    private int addPattern(){// Function that makes simon choose random colors
+        count++;
+        Log.i("Random: ", ""+index);
+        return index;
+    }//Called from simonsTurn
+    //Pattern for game mode 2 (Random Pattern: Normal difficulty)
+    private int addPattern2(){// Function that makes simon choose random colors
         Random rand = new Random();
-        int index = rand.nextInt(4);
+        int index = rand.nextInt(19);
+        index = index % 4;
         count++;
         Log.i("Random ", ""+index);
         return index;
     }//Called from simonsTurn
+    private int addPattern3(){// Function that makes sets simons predetermined colors and users chooses in reverse
+        int index;
+        if((count * count) % 11 > 5){
+            index = (count * count * 3) % 4;
+        }else{
+            index = (count * count * count) % 3;
+        }
 
+        count++;
+        Log.i("Random: ", ""+index);
+        return index;
+    }//Called from simonsTurn
+    //Pattern for game mode 3 ()
     private void chooseGameMode(){
 
         if(gameMode == 2){
@@ -173,13 +199,26 @@ public class GameActivity extends AppCompatActivity
 
     private void play(){
         simonsTurn();
+
     }//Called by onCreate
 
     private void simonsTurn() {
         //toast("Simon's Turn");
-        simonPattern.add(addPattern());//add a random pattern
-        flash = new FlashSimon();
-        flash.execute();
+        // Choose pattern from which game mode is selected
+
+        if(gameMode == 2){
+            simonPattern.add(addPattern2());//add a random pattern: NORMAL
+            flash = new FlashSimon();
+            flash.execute();
+        }else if(gameMode ==3){
+            simonPattern.add(addPattern3());//add a predetermined pattern that will be checked in reverse: HARD
+            flash = new FlashSimon();
+            flash.execute();
+        }else{
+            simonPattern.add(addPattern1());//add a predetermined pattern: EASY
+            flash = new FlashSimon();
+            flash.execute();
+        }
     }//Called from onCreate
 
     private void updateScore(){
@@ -192,6 +231,7 @@ public class GameActivity extends AppCompatActivity
 
     private void usersTurn(){
         lockButtons = false;
+        simonsTurn();// For testing code *******************************************************
         //Should allow "counts" amount of input here. On click needs to be lock after input
 
     }//Called from FLASH after thread Completes
@@ -387,17 +427,17 @@ public class GameActivity extends AppCompatActivity
     public boolean onMenuItemClick(MenuItem item)  {
         if(item.getItemId() == R.id.gameMode1){
             vb.vibrate(10);
-            gameMode = 0;
+            gameMode = 1;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.gameMode2){
             vb.vibrate(10);
-            gameMode = 1;
+            gameMode = 2;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.gameMode3){
             vb.vibrate(10);
-            gameMode = 2;
+            gameMode = 3;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.actionRestart){
