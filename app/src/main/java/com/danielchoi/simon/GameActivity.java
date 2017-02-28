@@ -20,16 +20,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
 public class GameActivity extends AppCompatActivity
-        implements View.OnTouchListener,PopupMenu.OnMenuItemClickListener{
+    implements View.OnTouchListener, PopupMenu.OnMenuItemClickListener {
 
-    //***********************************************************DECLARE*VARIABLES*
-    Vector<Integer> userPattern = new Vector<>(),simonPattern = new Vector<>();
+    // VAR Declaration.
+    Vector<Integer> userPattern = new Vector<>(), simonPattern = new Vector<>();
     private int tempo, gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
@@ -44,9 +45,8 @@ public class GameActivity extends AppCompatActivity
     public boolean match;
     public static final int activityRef = 2000;
 
-    //*********************************************************Initialize*Variables*
-
-    private void setVariables(){
+    // VAR Initialization.
+    private void setVariables() {
         count = 0;
         score = 0;
         hintCount = 3;
@@ -59,16 +59,16 @@ public class GameActivity extends AppCompatActivity
 
         colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton,
             R.id.red_imageButton}; // Color button ids
-        colorDrawable = new int[]{R.drawable.green,R.drawable.blue,R.drawable.yellow,R.drawable.red};
-        pressedDrawable = new int[]{R.drawable.greenpressed ,R.drawable.bluepressed,R.drawable.yellowpressed,
+        colorDrawable = new int[]{R.drawable.green, R.drawable.blue, R.drawable.yellow, R.drawable.red};
+        pressedDrawable = new int[]{R.drawable.greenpressed, R.drawable.bluepressed, R.drawable.yellowpressed,
             R.drawable.redpressed};
-        soundID = new int []{soundPool.load(this,R.raw.greennote,1), soundPool.load(this,R.raw.bluenote,1),
-            soundPool.load(this,R.raw.yellownote,1),soundPool.load(this,R.raw.rednote,1),
-            soundPool.load(this,R.raw.countdown,1),soundPool.load(this,R.raw.go,1)};
+        soundID = new int[]{soundPool.load(this, R.raw.greennote, 1), soundPool.load(this, R.raw.bluenote, 1),
+            soundPool.load(this, R.raw.yellownote, 1), soundPool.load(this, R.raw.rednote, 1),
+            soundPool.load(this, R.raw.countdown, 1), soundPool.load(this, R.raw.go, 1)};
 
-        customFont= Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
+        customFont = Typeface.createFromAsset(getAssets(), "fonts/digitaldismay.otf");
 
-        scoreTextView = (TextView)findViewById(R.id.score_textView);
+        scoreTextView = (TextView) findViewById(R.id.score_textView);
         scoreTextView.setTypeface(customFont);
 
         gButton = (ImageButton) findViewById(R.id.green_imageButton);
@@ -83,11 +83,11 @@ public class GameActivity extends AppCompatActivity
         findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
         findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
         findViewById(R.id.setScore_button).setOnClickListener(new SetHighScore());
+    }
 
-
-    }//Initialize Variables.
-
-    //******************************************************************LIFECYCLES*
+    /**
+     * onCreate is the initial life cycle of the app.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,22 +95,28 @@ public class GameActivity extends AppCompatActivity
         soundsLoaded = new HashSet<Integer>();
     }
 
+    /**
+     * onPause cancels sounds and animations.
+     */
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        if(flash != null){
+        if (flash != null) {
             flash.cancel(true);
             flash = null;
         }
-        if(soundPool != null){
+        if (soundPool != null) {
             soundPool.release();
             soundPool = null;
             soundsLoaded.clear();
         }
     }
 
+    /**
+     * onResume loads up the sounds and prepares game mode.
+     */
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
 
         AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
@@ -123,105 +129,111 @@ public class GameActivity extends AppCompatActivity
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                if(status == 0){
+                if (status == 0) {
                     soundsLoaded.add(sampleId);
-                    Log.i("SOUND", "Sound loaded = "+sampleId);
-                }else{
-                    Log.i("SOUND", "Error cannot load sound status = "+status);
+                    Log.i("SOUND", "Sound loaded = " + sampleId);
+                } else {
+                    Log.i("SOUND", "Error cannot load sound status = " + status);
                 }
             }
         });
         chooseGameMode();
     }
 
-    //***********************************************************************SIMON*
-    //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
-    private int patternMode(){// Function that makes simon choose predetermined colors
-        return predefinedPattern();
-    }//Called from simonsTurn
-    //Pattern for game mode 2 (Random Pattern: Normal difficulty)
-    private int randomMode(){// Function that makes simon choose random colors
-        Random rand = new Random(System.nanoTime());
-        int index = rand.nextInt(100);
-        index = index % 4;
-        count++;
-        return index;
-    }//Called from simonsTurn
-    private int reverseMode(){// Function that sets simons predetermined colors and users chooses in reverse
-        return predefinedPattern();
-    }//Called from simonsTurn
-
     /**
-     * pattern method calculates the index to create the predetermined pattern.
+     * predefinedPattern calculates the index to create the predetermined pattern.
+     *
      * @return The index calculated by the formula.
      */
-    public int predefinedPattern(){
+    public int predefinedPattern() {
         int index;
-        if((count * count) % 11 > 5){
+        if ((count * count) % 11 > 5) {
             index = (count * count * 3) % 4;
-        }else{
+        } else {
             index = (count * count * count) % 3;
         }
         count++;
         return index;
     }
 
-    //Pattern for game mode 3 ()
-    private void chooseGameMode(){
+    /**
+     * randomMode randomly returns an int to be added to Simon's pattern.
+     *
+     * @return index to be added to simon's pattern.
+     */
+    private int randomPattern() {
+        Random rand = new Random(System.nanoTime());
+        int index = rand.nextInt(100);
+        index = index % 4;
+        count++;
+        return index;
+    }
 
-        if(gameMode == 2){
+    /**
+     * chooseGameMode determines what game mode is chosen from the menu.
+     */
+    private void chooseGameMode() {
+        if (gameMode == 2) {
             setVariables();
             toast("Get Ready, Random Mode (Medium)");
             countDown = new CountDown();
             countDown.execute();
             play();
-        }else if(gameMode ==3){
+        } else if (gameMode == 3) {
             setVariables();
             toast("Get Ready, Reverse Mode (Hard)");
             countDown = new CountDown();
             countDown.execute();
             play();
-        }else{
+        } else {
             setVariables();
             toast("Get Ready, Pattern Mode (Easy)");
             countDown = new CountDown();
             countDown.execute();
             play();
         }
-    }//Called from onCreate & Menu
+    }
 
-    private void play(){
+    /**
+     * play starts the game.
+     */
+    private void play() {
         simonsTurn();
-    }//Called by onCreate
+    }
 
+    /**
+     * simonsTurn calls the appropriate pattern based on the game mode chosen.
+     */
     private void simonsTurn() {
-        //toast("Simon's Turn");
-        // Choose pattern from which game mode is selected
-
-        if(gameMode == 2){
-            simonPattern.add(randomMode());//add a random pattern: NORMAL
-        }else if(gameMode ==3){
-            simonPattern.add(reverseMode());//add a predetermined pattern that will be checked in reverse: HARD
-        }else{
-            simonPattern.add(patternMode());//add a predetermined pattern: EASY
+        if (gameMode == 2) {
+            simonPattern.add(randomPattern()); // Medium.
+        } else if (gameMode == 3) {
+            simonPattern.add(predefinedPattern()); // Hard.
+        } else {
+            simonPattern.add(predefinedPattern()); // Easy.
         }
         flash = new FlashSimon();
         flash.execute();
         Log.i("simonPattern", "" + simonPattern);
-    }//Called from onCreate
+    }
 
-    private void updateScore(){
+    /**
+     * updateScore updates the score.
+     */
+    private void updateScore() {
         String scoreString;
-        if(score<10) scoreString = "0"+score;
+        if (score < 10) scoreString = "0" + score;
         else scoreString = String.valueOf(score);
-
         scoreTextView.setText(scoreString);
     }
 
-    private void usersTurn(){
+    /**
+     * usersTurn determines where the user is in their progress to matching Simon's pattern and
+     * sends the user's choice to be compared against Simon's pattern.
+     */
+    private void usersTurn() {
         lockButtons = false;
-        //Should allow "counts" amount of input here. On click needs to be lock after input
-        if (choiceCount > 0) { // Jump in statement only if user has pressed button.
+        if (choiceCount > 0) {
             if (choiceCount < simonPattern.size()) {
                 seqCompare();
             } else if (choiceCount == simonPattern.size()) {
@@ -235,79 +247,89 @@ public class GameActivity extends AppCompatActivity
                             public void run() {
                                 simonsTurn();
                             }
-                        },
-                        2000 // Delay in ms.
+                        }, 2000 // Delay in ms.
                     );
                 }
             }
         }
-    }//Called from FLASH after thread Completes
+    }
 
+    /**
+     * gameOver simply ends the game when the user makes the wrong choice.
+     */
     private void gameOver() {
         choiceCount = 0;
         lockButtons = true;
-        Log.i("gameOver","Game Over");
+        Log.i("gameOver", "Game Over");
         toast("Wrong Choice. Game Over!");
     }
 
-    //*********************************************************************THREADS*
+    // THREADS
 
-    class FlashSimon extends AsyncTask<Void, Void, Void>{
+    /**
+     * FlashSimon flashes when Simon is choosing a pattern.
+     */
+    class FlashSimon extends AsyncTask<Void, Void, Void> {
 
+        /**
+         * doInBackground loads sounds for simonPattern.
+         */
         @Override
         protected Void doInBackground(Void... voids) {
 
-            for(int i = 0; i<simonPattern.size(); i++){
+            for (int i = 0; i < simonPattern.size(); i++) {
                 final int y = simonPattern.get(i);
                 try {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
-                        flash.setImageResource(pressedDrawable[y]);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
+                            flash.setImageResource(pressedDrawable[y]);
+                        }
+                    });
+                    if (soundsLoaded.contains(soundID[y])) {
+                        soundPool.play(soundID[y], 1.0f, 1.0f, 0, 0, 1.0f);
                     }
-                });
-
-                if(soundsLoaded.contains(soundID[y])){
-                    soundPool.play(soundID[y],1.0f, 1.0f, 0, 0, 1.0f);
-                }
-                    // Increase Tempo
-                    if(tempo > 320) {
+                    if (tempo > 320) {
                         tempo -= 20;
                     }
                     Thread.sleep(tempo);
                     runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                    ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
-                    flash.setImageResource(colorDrawable[y]);
-                    }
-                });
-
+                        @Override
+                        public void run() {
+                            ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
+                            flash.setImageResource(colorDrawable[y]);
+                        }
+                    });
                 } catch (InterruptedException e) {
-                    Log.i("THREAD=====","FLASH was interrupted");
+                    Log.i("THREAD=====", "FLASH was interrupted");
                 }
-
-            }//for
-            //**************************************************Debugging Tempo*
-            //Log.i("*******", "Tempo is : " + tempo);
-            //Log.i("*******", "Count is : " + count);
+            }
             return null;
-        }//doiInBackground
+        }
 
+        /**
+         * onPostExecute runs after Simon has established his first pattern.
+         */
         @Override
         protected void onPostExecute(Void aVoid) {
             toast("Your turn");
             usersTurn();
         }
 
-    } //Flashes Simon's Pattern
+    }
 
-    class CountDown extends AsyncTask<Void, String, Void>{
+    /**
+     * CountDown counts down to 0 to ready the user.
+     */
+    class CountDown extends AsyncTask<Void, String, Void> {
 
         int cdSound = soundID[4];
         int time = 1000;
 
+        /**
+         * onPreExecute...
+         */
         @Override
         protected void onPreExecute() {
             try {
@@ -317,11 +339,16 @@ public class GameActivity extends AppCompatActivity
             }
         }
 
+        /**
+         * doInBackground plays sound during the countdown.
+         *
+         * @return null
+         */
         @Override
         protected Void doInBackground(Void... voids) {
             String display;
             try {
-                for(int i = 3; i>=0; i--){
+                for (int i = 3; i >= 0; i--) {
                     if (i == 0) {
                         display = "go";
                         cdSound = soundID[5];
@@ -329,48 +356,65 @@ public class GameActivity extends AppCompatActivity
 
                     publishProgress(display);
                     Thread.sleep(time);
-                }//for
-            }catch (InterruptedException e) {
+                }
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-            }//catch
-
+            }
             return null;
+        }
 
-        }//doInBackground
-
+        /**
+         * onProgressUpdates updates the score display.
+         */
         @Override
         protected void onProgressUpdate(String... values) {
             String display = values[0];
             scoreTextView.setText(display);
-            if(soundsLoaded.contains(cdSound)){
-                soundPool.play(cdSound,1.0f, 1.0f, 0, 0, 1.0f);
+            if (soundsLoaded.contains(cdSound)) {
+                soundPool.play(cdSound, 1.0f, 1.0f, 0, 0, 1.0f);
             }
         }
 
+        /**
+         * onPostExecute runs when game is over.
+         */
         @Override
         protected void onPostExecute(Void aVoid) {
             updateScore();
         }
-    }//Beginning Countdown
+    }
 
-    //*************************************************FUNCTIONALITY*UTILITY*&*MENU*
+    // Functionality, Utility, Menu
 
-    class HintButtonListener implements View.OnClickListener{
+    /**
+     * HintButtonListener listens for usage of the hint button.
+     */
+    class HintButtonListener implements View.OnClickListener {
+        /**
+         * onClick tracks when the user uses a hint.
+         */
         @Override
         public void onClick(View view) {
-            if(hintCount >= 0){
+            if (hintCount >= 0) {
                 hintCount--;
                 flash = new FlashSimon();
                 flash.execute();
-                toastHigh("Hints Remaining: "+hintCount);
+                toastHigh("Hints Remaining: " + hintCount);
             }
-            if(hintCount == 0){
+            if (hintCount == 0) {
                 findViewById(R.id.hint_imageButton).setVisibility(View.INVISIBLE);
             }
         }
     }
-    class SetHighScore implements View.OnClickListener{
 
+    /**
+     * SetHighScore records the high scores of a completed game.
+     */
+    class SetHighScore implements View.OnClickListener {
+
+        /**
+         * onClick allows user to record their name for their score.
+         */
         @Override
         public void onClick(View view) {
             Intent scoreIntent = new Intent(getApplicationContext(), ScoreActivity.class);
@@ -381,97 +425,128 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
-    private void playerPress(int id){
+    /**
+     * playerPress plays a sound and flashes an image when a button is pressed.
+     *
+     * @param id The id of the button selected.
+     */
+    private void playerPress(int id) {
         vb.vibrate(10);
         ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
         flash.setImageResource(pressedDrawable[id]);
-        if(soundsLoaded.contains(soundID[id])){
-            soundPool.play(soundID[id],1.0f, 1.0f, 0, 0, 1.0f);
+        if (soundsLoaded.contains(soundID[id])) {
+            soundPool.play(soundID[id], 1.0f, 1.0f, 0, 0, 1.0f);
         }
-    }//OnPressDown
+    }
 
-    private void playerUp(int id){
+    /**
+     * playerUp returns button image to normal and stores the button selected, how many clicks the
+     * user has committed.
+     *
+     * @param id The id of the button selected.
+     */
+    private void playerUp(int id) {
         ImageButton flash = (ImageButton) findViewById(colorButtons[id]);
         flash.setImageResource(colorDrawable[id]);
-        Log.i("Button=", " "+id);
+        Log.i("Button=", " " + id);
         userChoice = id;
         choiceCount++;
         usersTurn();
-    }//OnPressUp
+    }
 
-    private void toast(String s){
+    /**
+     * toast is a reusable method for creating multiple toasts.
+     *
+     * @param s The string to be displayed in the toast.
+     */
+    private void toast(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-    }//Called from anywhere
+    }
 
-    private void toastHigh(String s){
+    /**
+     * toastHigh is a reusable methods for creating multiple toasts that are at the top of the
+     * screen.
+     *
+     * @param s The string to be displayed in the toast.
+     */
+    private void toastHigh(String s) {
         Toast toast = Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP, 0, 50);
         toast.show();
     }//Called from anywhere
 
+    /**
+     * onTouch determines which button was clicked by the user.
+     */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        if (view.getId() == colorButtons[0] && !lockButtons) {//green
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+        if (view.getId() == colorButtons[0] && !lockButtons) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 playerPress(0);
-            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 playerUp(0);
             }
-
         } else if (view.getId() == colorButtons[1] && !lockButtons) {
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 playerPress(1);
-            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 playerUp(1);
             }
         } else if (view.getId() == colorButtons[2] && !lockButtons) {
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 playerPress(2);
-            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 playerUp(2);
             }
         } else if (view.getId() == colorButtons[3] && !lockButtons) {
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 playerPress(3);
-            }else if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 playerUp(3);
             }
         }
-
         return false;
-    }//onTouch
+    }
 
+    /**
+     * onMenuItemClick detects what menu item was clicked.
+     *
+     * @param item The menu item clicked.
+     */
     @Override
-    public boolean onMenuItemClick(MenuItem item)  {
-        if(item.getItemId() == R.id.gameMode1){
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.gameMode1) {
             vb.vibrate(10);
             gameMode = 1;
             chooseGameMode();
             return true;
-        }else if(item.getItemId() == R.id.gameMode2){
+        } else if (item.getItemId() == R.id.gameMode2) {
             vb.vibrate(10);
             gameMode = 2;
             chooseGameMode();
             return true;
-        }else if(item.getItemId() == R.id.gameMode3){
+        } else if (item.getItemId() == R.id.gameMode3) {
             vb.vibrate(10);
             gameMode = 3;
             chooseGameMode();
             return true;
-        }else if(item.getItemId() == R.id.actionRestart){
+        } else if (item.getItemId() == R.id.actionRestart) {
             vb.vibrate(10);
             chooseGameMode();
             return true;
-        }else if(item.getItemId() == R.id.actionQuit){
+        } else if (item.getItemId() == R.id.actionQuit) {
             vb.vibrate(10);
             Intent aboutIntent = new Intent(this, HomeActivity.class);
             startActivity(aboutIntent);
             return true;
         }
         return false;
-    }//Menu Clicks
+    }
 
+    /**
+     * popupMenu...
+     */
     public void popupMenu(View v) {
         vb.vibrate(10);
         PopupMenu popup = new PopupMenu(this, v);
@@ -479,17 +554,23 @@ public class GameActivity extends AppCompatActivity
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu, popup.getMenu());
         popup.show();
-    }//PopUpMenu
+    }
 
     /**
      * seqCompare method does a simple check to see if user choice matches simon's pattern.
      */
     public void seqCompare() {
-        if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
-            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+        if (gameMode == 3) {
+            Collections.reverse(simonPattern); // Reverse pattern to be checked.
+        }
+        if (simonPattern.elementAt(choiceCount - 1).equals(userChoice)) {
+            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount - 1) + " user: " + userChoice);
             match = true;
+            if (gameMode == 3) {
+                Collections.reverse(simonPattern); // Reverse pattern again to properly accumulate indexes.
+            }
         } else {
-            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount - 1) + " user: " + userChoice);
             match = false;
             gameOver();
         }
