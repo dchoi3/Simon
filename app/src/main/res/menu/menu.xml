@@ -10,7 +10,7 @@
         />
     <item
         android:id="@+id/gameMode3"
-        android:title="Reverse Pattern Mode (Hard)"
+        android:title="Reverse Mode (Hard)"
         />
     <item
         android:id="@+id/actionRestart"

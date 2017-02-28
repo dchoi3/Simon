@@ -205,17 +205,13 @@ public class GameActivity extends AppCompatActivity
 
         if(gameMode == 2){
             simonPattern.add(randomMode());//add a random pattern: NORMAL
-            flash = new FlashSimon();
-            flash.execute();
         }else if(gameMode ==3){
             simonPattern.add(reverseMode());//add a predetermined pattern that will be checked in reverse: HARD
-            flash = new FlashSimon();
-            flash.execute();
         }else{
             simonPattern.add(patternMode());//add a predetermined pattern: EASY
-            flash = new FlashSimon();
-            flash.execute();
         }
+        flash = new FlashSimon();
+        flash.execute();
         Log.i("simonPattern", "" + simonPattern);
     }//Called from onCreate
 
