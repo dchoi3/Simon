@@ -44,6 +44,7 @@ public class GameActivity extends AppCompatActivity
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
     public int choiceCount = 0; // The number of times the user chooses a color.
+    public boolean match = true;
 
     //*********************************************************Initialize*Variables*
 
@@ -107,7 +108,6 @@ public class GameActivity extends AppCompatActivity
             soundPool = null;
             soundsLoaded.clear();
         }
-
     }
 
     @Override
@@ -193,7 +193,36 @@ public class GameActivity extends AppCompatActivity
     private void usersTurn(){
         lockButtons = false;
         //Should allow "counts" amount of input here. On click needs to be lock after input
-
+        if(match){
+            if (choiceCount > 0) { // If user has pressed at least one button.
+                if (choiceCount < simonPattern.size()) {
+                    seqCompare();
+                } else if (choiceCount == simonPattern.size()) {
+                    seqCompare();
+                    if (match) {
+                        choiceCount = 0;
+                        new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    simonsTurn();
+                                }
+                            },
+                            2000 // Delay in ms.
+                        );
+                    } else {
+                        // Game Over!
+                        Log.i("Game Over!", "Wrong guess.");
+                    }
+                } else {
+                    // Guessed too many times.
+                    Log.i("Game Over!", "Too many guesses.");
+                }
+            }
+        } else { // match = false; Game Over!
+            // Game Over!
+            Log.i("Game Over!", "Wrong guess.");
+        }
     }//Called from FLASH after thread Completes
 
     //*********************************************************************THREADS*
@@ -307,7 +336,6 @@ public class GameActivity extends AppCompatActivity
             if(hintCount == 0){
                 findViewById(R.id.hint_imageButton).setVisibility(View.INVISIBLE);
             }
-
         }
     }
 
@@ -325,8 +353,8 @@ public class GameActivity extends AppCompatActivity
         flash.setImageResource(colorDrawable[id]);
         Log.i("Button=", " "+id);
         userChoice = id;
-        seqCompare();
         choiceCount++;
+        usersTurn();
     }//OnPressUp
 
     private void toast(String s){
@@ -415,21 +443,13 @@ public class GameActivity extends AppCompatActivity
      * seqCompare method does a simple check to see if user choice matches simon's pattern.
      */
     public void seqCompare() {
-        if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
-            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        play();
-                    }
-                },
-                1500 // Delay in ms.
-            );
+        if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
+            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = true;
         } else {
-            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = false;
         }
-        choiceCount = 0; // Reset choice counter to prepare for next round.
     }
 
 }
