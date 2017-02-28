@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="8"
+    android:id="@+id/scoreRowLayout">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="50dp"
+        android:src="@drawable/person"
+        android:id="@+id/imageView"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:text="@string/defaultText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:id="@+id/placeTv"
+        android:textSize="20sp"
+        android:gravity="center|start"
+        android:layout_weight="1"
+        android:textColor="@color/green" />
+
+    <TextView
+        android:text="@string/defaultText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:id="@+id/nameTv"
+        android:textSize="20sp"
+        android:gravity="center|start"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/red"
+        android:layout_weight="5"
+        />
+
+    <TextView
+        android:text="@string/defaultText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:id="@+id/scoreTv"
+        android:textSize="20sp"
+        android:gravity="center|start"
+        android:layout_weight="1"
+        android:textColor="@color/blue" />
+
+</LinearLayout>

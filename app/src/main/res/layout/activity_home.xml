@@ -13,6 +13,18 @@
     android:background="@drawable/background"
     tools:context="com.danielchoi.simon.HomeActivity">
 
+    <Button
+        android:text="High Scores"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/score_button"
+        android:textColor="@color/blue"
+        android:textSize="36sp"
+        android:background="#00000000"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/about_button"
+        android:layout_centerHorizontal="true" />
+
     <ImageButton
         android:layout_height="wrap_content"
         android:src="@drawable/play"
@@ -32,12 +44,12 @@
         android:text="About"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
         android:id="@+id/about_button"
-        android:textColor="#00FF00"
+        android:textColor="@color/green"
         android:textSize="36sp"
-        android:background="#00000000" />
+        android:background="#00000000"
+        android:layout_marginTop="23dp"
+        android:layout_below="@+id/start_imageButton"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

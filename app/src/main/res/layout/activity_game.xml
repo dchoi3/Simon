@@ -103,7 +103,7 @@
         app:srcCompat="@drawable/menu"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/menuImageButton"
+        android:id="@+id/menu_ImageButton"
         android:background="#00000000"
         android:scaleType="fitXY"
         android:onClick="popupMenu" />
@@ -118,6 +118,15 @@
         android:background="#00000000"
         android:scaleType="fitXY"
         android:elevation="0dp" />
+
+    <Button
+        android:text="temp to call setScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
+        android:id="@+id/setScore_button" />
 
 
 </RelativeLayout>
