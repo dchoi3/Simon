@@ -30,9 +30,8 @@ public class GameActivity extends AppCompatActivity
         implements View.OnTouchListener,PopupMenu.OnMenuItemClickListener{
 
     //***********************************************************DECLARE*VARIABLES*
-    Vector<Integer> userPattern,simonPattern;
-    private int userChoice;
-    private int gameMode, count, score, flashSpeed, hintCount;
+    Vector<Integer> userPattern = new Vector<>(),simonPattern = new Vector<>();
+    private int tempo, gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -43,7 +42,7 @@ public class GameActivity extends AppCompatActivity
     public TextView scoreTextView;
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
-    public int choiceCount = 0; // The number of times the user chooses a color.
+    public static final int activityRef = 2000;
 
     //*********************************************************Initialize*Variables*
 
@@ -51,12 +50,12 @@ public class GameActivity extends AppCompatActivity
         count = 0;
         score = 0;
         hintCount = 3;
-        simonPattern = new Vector<>();
-        userPattern = new Vector<>();
+        simonPattern.clear();
+        userPattern.clear();
         flashSpeed = 1000;
+        tempo = flashSpeed;
         lockButtons = true;
-        findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
-
+        choiceCount = 0; // The number of times the user chooses a color.
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton,
@@ -82,7 +81,9 @@ public class GameActivity extends AppCompatActivity
         rButton = (ImageButton) findViewById(R.id.red_imageButton);
         rButton.setOnTouchListener(this);
 
+        findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
         findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
+        findViewById(R.id.setScore_button).setOnClickListener(new SetHighScore());
 
 
     }//Initialize Variables.
@@ -139,15 +140,41 @@ public class GameActivity extends AppCompatActivity
     }
 
     //***********************************************************************SIMON*
+    //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
+    private int addPattern1(){// Function that makes simon choose predetermined colors
+        int index;
+            if((count * count) % 11 > 5){
+                index = (count * count * 3) % 4;
+            }else{
+                index = (count * count * count) % 3;
+            }
 
-    private int addPattern(){// Function that makes simon choose random colors
-        Random rand = new Random();
-        int index = rand.nextInt(4);
+        count++;
+        Log.i("Random: ", ""+index);
+        return index;
+    }//Called from simonsTurn
+    //Pattern for game mode 2 (Random Pattern: Normal difficulty)
+    private int addPattern2(){// Function that makes simon choose random colors
+        Random rand = new Random(System.nanoTime());
+        int index = rand.nextInt(100);
+        index = index % 4;
         count++;
         Log.i("Random ", ""+index);
         return index;
     }//Called from simonsTurn
+    private int addPattern3(){// Function that makes sets simons predetermined colors and users chooses in reverse
+        int index;
+        if((count * count) % 11 > 5){
+            index = (count * count * 3) % 4;
+        }else{
+            index = (count * count * count) % 3;
+        }
 
+        count++;
+        Log.i("Random: ", ""+index);
+        return index;
+    }//Called from simonsTurn
+    //Pattern for game mode 3 ()
     private void chooseGameMode(){
 
         if(gameMode == 2){
@@ -173,13 +200,26 @@ public class GameActivity extends AppCompatActivity
 
     private void play(){
         simonsTurn();
+
     }//Called by onCreate
 
     private void simonsTurn() {
         //toast("Simon's Turn");
-        simonPattern.add(addPattern());//add a random pattern
-        flash = new FlashSimon();
-        flash.execute();
+        // Choose pattern from which game mode is selected
+
+        if(gameMode == 2){
+            simonPattern.add(addPattern2());//add a random pattern: NORMAL
+            flash = new FlashSimon();
+            flash.execute();
+        }else if(gameMode ==3){
+            simonPattern.add(addPattern3());//add a predetermined pattern that will be checked in reverse: HARD
+            flash = new FlashSimon();
+            flash.execute();
+        }else{
+            simonPattern.add(addPattern1());//add a predetermined pattern: EASY
+            flash = new FlashSimon();
+            flash.execute();
+        }
     }//Called from onCreate
 
     private void updateScore(){
@@ -192,6 +232,7 @@ public class GameActivity extends AppCompatActivity
 
     private void usersTurn(){
         lockButtons = false;
+        simonsTurn();// For testing code *******************************************************
         //Should allow "counts" amount of input here. On click needs to be lock after input
 
     }//Called from FLASH after thread Completes
@@ -217,9 +258,12 @@ public class GameActivity extends AppCompatActivity
                 if(soundsLoaded.contains(soundID[y])){
                     soundPool.play(soundID[y],1.0f, 1.0f, 0, 0, 1.0f);
                 }
-                Thread.sleep(flashSpeed);
-
-                runOnUiThread(new Runnable() {
+                    // Increase Tempo
+                    if(tempo > 320) {
+                        tempo -= 20;
+                    }
+                    Thread.sleep(tempo);
+                    runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                     ImageButton flash = (ImageButton) findViewById(colorButtons[y]);
@@ -227,11 +271,14 @@ public class GameActivity extends AppCompatActivity
                     }
                 });
 
-            } catch (InterruptedException e) {
-                Log.i("THREAD=====","FLASH was interrupted");
-            }
+                } catch (InterruptedException e) {
+                    Log.i("THREAD=====","FLASH was interrupted");
+                }
 
             }//for
+            //**************************************************Debugging Tempo*
+            //Log.i("*******", "Tempo is : " + tempo);
+            //Log.i("*******", "Count is : " + count);
             return null;
         }//doiInBackground
 
@@ -310,6 +357,17 @@ public class GameActivity extends AppCompatActivity
 
         }
     }
+    class SetHighScore implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            Intent scoreIntent = new Intent(getApplicationContext(), ScoreActivity.class);
+            scoreIntent.putExtra("score", score);
+            scoreIntent.putExtra("calling-Activity", activityRef);
+            startActivity(scoreIntent);
+
+        }
+    }
 
     private void playerPress(int id){
         vb.vibrate(10);
@@ -376,17 +434,17 @@ public class GameActivity extends AppCompatActivity
     public boolean onMenuItemClick(MenuItem item)  {
         if(item.getItemId() == R.id.gameMode1){
             vb.vibrate(10);
-            gameMode = 0;
+            gameMode = 1;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.gameMode2){
             vb.vibrate(10);
-            gameMode = 1;
+            gameMode = 2;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.gameMode3){
             vb.vibrate(10);
-            gameMode = 2;
+            gameMode = 3;
             chooseGameMode();
             return true;
         }else if(item.getItemId() == R.id.actionRestart){
@@ -414,6 +472,7 @@ public class GameActivity extends AppCompatActivity
     public void seqCompare() {
         if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
             Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+            score++;
             new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override

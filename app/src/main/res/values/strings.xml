@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Simon</string>
+    <string name="defaultText">Default</string>
+    <string name="congrats">Congrats!</string>
+    <string name ="nameHint">Name</string>
+    <string name ="highscore">High Scores</string>
 </resources>
