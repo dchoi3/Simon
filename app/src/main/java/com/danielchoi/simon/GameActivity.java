@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -140,37 +139,35 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************************SIMON*
     //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
-    private int addPattern1(){// Function that makes simon choose predetermined colors
+    private int predeterminedMode(){// Function that makes simon choose predetermined colors
         int index;
             if((count * count) % 11 > 5){
                 index = (count * count * 3) % 4;
             }else{
                 index = (count * count * count) % 3;
             }
-
         count++;
-        Log.i("Random: ", ""+index);
+        Log.i("Predetermined Mode", ""+index);
         return index;
     }//Called from simonsTurn
     //Pattern for game mode 2 (Random Pattern: Normal difficulty)
-    private int addPattern2(){// Function that makes simon choose random colors
+    private int randomMode(){// Function that makes simon choose random colors
         Random rand = new Random(System.nanoTime());
         int index = rand.nextInt(100);
         index = index % 4;
         count++;
-        Log.i("Random ", ""+index);
+        Log.i("Random Mode", ""+index);
         return index;
     }//Called from simonsTurn
-    private int addPattern3(){// Function that makes sets simons predetermined colors and users chooses in reverse
+    private int reverseMode(){// Function that sets simons predetermined colors and users chooses in reverse
         int index;
         if((count * count) % 11 > 5){
             index = (count * count * 3) % 4;
         }else{
             index = (count * count * count) % 3;
         }
-
         count++;
-        Log.i("Random: ", ""+index);
+        Log.i("Reverse Mode", ""+index);
         return index;
     }//Called from simonsTurn
     //Pattern for game mode 3 ()
@@ -207,15 +204,15 @@ public class GameActivity extends AppCompatActivity
         // Choose pattern from which game mode is selected
 
         if(gameMode == 2){
-            simonPattern.add(addPattern2());//add a random pattern: NORMAL
+            simonPattern.add(randomMode());//add a random pattern: NORMAL
             flash = new FlashSimon();
             flash.execute();
         }else if(gameMode ==3){
-            simonPattern.add(addPattern3());//add a predetermined pattern that will be checked in reverse: HARD
+            simonPattern.add(reverseMode());//add a predetermined pattern that will be checked in reverse: HARD
             flash = new FlashSimon();
             flash.execute();
         }else{
-            simonPattern.add(addPattern1());//add a predetermined pattern: EASY
+            simonPattern.add(predeterminedMode());//add a predetermined pattern: EASY
             flash = new FlashSimon();
             flash.execute();
         }
