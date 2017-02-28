@@ -44,7 +44,7 @@ public class GameActivity extends AppCompatActivity
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
     public int choiceCount = 0; // The number of times the user chooses a color.
-    public boolean match = true;
+    public boolean match;
 
     //*********************************************************Initialize*Variables*
 
@@ -180,6 +180,7 @@ public class GameActivity extends AppCompatActivity
         simonPattern.add(addPattern());//add a random pattern
         flash = new FlashSimon();
         flash.execute();
+        Log.i("simonPattern", "" + simonPattern);
     }//Called from onCreate
 
     private void updateScore(){
@@ -193,10 +194,11 @@ public class GameActivity extends AppCompatActivity
     private void usersTurn(){
         lockButtons = false;
         //Should allow "counts" amount of input here. On click needs to be lock after input
-        if (choiceCount > 0) { // If user has pressed at least one button.
+        if (choiceCount > 0) { // Jump in statement only if user has pressed button.
             if (choiceCount < simonPattern.size()) {
                 seqCompare();
             } else if (choiceCount == simonPattern.size()) {
+                lockButtons = true;
                 seqCompare();
                 if (match) {
                     choiceCount = 0;
@@ -209,19 +211,16 @@ public class GameActivity extends AppCompatActivity
                         },
                         2000 // Delay in ms.
                     );
-                } else {
-                    gameOver("Game Over! Wrong guess.");
                 }
-            } else {
-
-                gameOver("Game Over! Too many guesses.");
             }
         }
     }//Called from FLASH after thread Completes
 
-    private void gameOver(String msg) {
+    private void gameOver() {
         choiceCount = 0;
-        toast(msg);
+        lockButtons = true;
+        Log.i("gameOver","Game Over");
+        toast("Wrong Choice. Game Over!");
     }
 
     //*********************************************************************THREADS*
@@ -448,6 +447,7 @@ public class GameActivity extends AppCompatActivity
         } else {
             Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
             match = false;
+            gameOver();
         }
     }
 
