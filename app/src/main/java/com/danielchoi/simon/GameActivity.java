@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -42,6 +41,7 @@ public class GameActivity extends AppCompatActivity
     public TextView scoreTextView;
     public Vibrator vb;
     public ImageButton gButton, bButton, yButton, rButton;
+    public boolean match;
     public static final int activityRef = 2000;
 
     //*********************************************************Initialize*Variables*
@@ -55,7 +55,6 @@ public class GameActivity extends AppCompatActivity
         flashSpeed = 1000;
         tempo = flashSpeed;
         lockButtons = true;
-        choiceCount = 0; // The number of times the user chooses a color.
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         colorButtons = new int[]{R.id.green_imageButton, R.id.blue_imageButton, R.id.yellow_imageButton,
@@ -108,7 +107,6 @@ public class GameActivity extends AppCompatActivity
             soundPool = null;
             soundsLoaded.clear();
         }
-
     }
 
     @Override
@@ -131,67 +129,61 @@ public class GameActivity extends AppCompatActivity
                 }else{
                     Log.i("SOUND", "Error cannot load sound status = "+status);
                 }
-
             }
         });
-
         chooseGameMode();
-
     }
 
     //***********************************************************************SIMON*
     //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
-    private int addPattern1(){// Function that makes simon choose predetermined colors
-        int index;
-            if((count * count) % 11 > 5){
-                index = (count * count * 3) % 4;
-            }else{
-                index = (count * count * count) % 3;
-            }
-
-        count++;
-        Log.i("Random: ", ""+index);
-        return index;
+    private int patternMode(){// Function that makes simon choose predetermined colors
+        return predefinedPattern();
     }//Called from simonsTurn
     //Pattern for game mode 2 (Random Pattern: Normal difficulty)
-    private int addPattern2(){// Function that makes simon choose random colors
+    private int randomMode(){// Function that makes simon choose random colors
         Random rand = new Random(System.nanoTime());
         int index = rand.nextInt(100);
         index = index % 4;
         count++;
-        Log.i("Random ", ""+index);
         return index;
     }//Called from simonsTurn
-    private int addPattern3(){// Function that makes sets simons predetermined colors and users chooses in reverse
+    private int reverseMode(){// Function that sets simons predetermined colors and users chooses in reverse
+        return predefinedPattern();
+    }//Called from simonsTurn
+
+    /**
+     * pattern method calculates the index to create the predetermined pattern.
+     * @return The index calculated by the formula.
+     */
+    public int predefinedPattern(){
         int index;
         if((count * count) % 11 > 5){
             index = (count * count * 3) % 4;
         }else{
             index = (count * count * count) % 3;
         }
-
         count++;
-        Log.i("Random: ", ""+index);
         return index;
-    }//Called from simonsTurn
+    }
+
     //Pattern for game mode 3 ()
     private void chooseGameMode(){
 
         if(gameMode == 2){
             setVariables();
-            toast("Get Ready, Game Mode II");
+            toast("Get Ready, Random Mode (Medium)");
             countDown = new CountDown();
             countDown.execute();
             play();
         }else if(gameMode ==3){
             setVariables();
-            toast("Get Ready, Game Mode III");
+            toast("Get Ready, Reverse Mode (Hard)");
             countDown = new CountDown();
             countDown.execute();
             play();
         }else{
             setVariables();
-            toast("Get Ready, Game Mode I");
+            toast("Get Ready, Pattern Mode (Easy)");
             countDown = new CountDown();
             countDown.execute();
             play();
@@ -200,7 +192,6 @@ public class GameActivity extends AppCompatActivity
 
     private void play(){
         simonsTurn();
-
     }//Called by onCreate
 
     private void simonsTurn() {
@@ -208,18 +199,15 @@ public class GameActivity extends AppCompatActivity
         // Choose pattern from which game mode is selected
 
         if(gameMode == 2){
-            simonPattern.add(addPattern2());//add a random pattern: NORMAL
-            flash = new FlashSimon();
-            flash.execute();
+            simonPattern.add(randomMode());//add a random pattern: NORMAL
         }else if(gameMode ==3){
-            simonPattern.add(addPattern3());//add a predetermined pattern that will be checked in reverse: HARD
-            flash = new FlashSimon();
-            flash.execute();
+            simonPattern.add(reverseMode());//add a predetermined pattern that will be checked in reverse: HARD
         }else{
-            simonPattern.add(addPattern1());//add a predetermined pattern: EASY
-            flash = new FlashSimon();
-            flash.execute();
+            simonPattern.add(patternMode());//add a predetermined pattern: EASY
         }
+        flash = new FlashSimon();
+        flash.execute();
+        Log.i("simonPattern", "" + simonPattern);
     }//Called from onCreate
 
     private void updateScore(){
@@ -232,10 +220,35 @@ public class GameActivity extends AppCompatActivity
 
     private void usersTurn(){
         lockButtons = false;
-        simonsTurn();// For testing code *******************************************************
         //Should allow "counts" amount of input here. On click needs to be lock after input
-
+        if (choiceCount > 0) { // Jump in statement only if user has pressed button.
+            if (choiceCount < simonPattern.size()) {
+                seqCompare();
+            } else if (choiceCount == simonPattern.size()) {
+                lockButtons = true;
+                seqCompare();
+                if (match) {
+                    choiceCount = 0;
+                    new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                simonsTurn();
+                            }
+                        },
+                        2000 // Delay in ms.
+                    );
+                }
+            }
+        }
     }//Called from FLASH after thread Completes
+
+    private void gameOver() {
+        choiceCount = 0;
+        lockButtons = true;
+        Log.i("gameOver","Game Over");
+        toast("Wrong Choice. Game Over!");
+    }
 
     //*********************************************************************THREADS*
 
@@ -354,7 +367,6 @@ public class GameActivity extends AppCompatActivity
             if(hintCount == 0){
                 findViewById(R.id.hint_imageButton).setVisibility(View.INVISIBLE);
             }
-
         }
     }
     class SetHighScore implements View.OnClickListener{
@@ -383,8 +395,8 @@ public class GameActivity extends AppCompatActivity
         flash.setImageResource(colorDrawable[id]);
         Log.i("Button=", " "+id);
         userChoice = id;
-        seqCompare();
         choiceCount++;
+        usersTurn();
     }//OnPressUp
 
     private void toast(String s){
@@ -469,23 +481,17 @@ public class GameActivity extends AppCompatActivity
         popup.show();
     }//PopUpMenu
 
+    /**
+     * seqCompare method does a simple check to see if user choice matches simon's pattern.
+     */
     public void seqCompare() {
-        if (simonPattern.elementAt(choiceCount).equals(userChoice)) {
-            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
-            score++;
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        play();
-                    }
-                },
-                1500 // Delay in ms.
-            );
+        if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
+            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = true;
         } else {
-            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount) + " user: " + userChoice);
+            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = false;
+            gameOver();
         }
-        choiceCount = 0; // Reset choice counter to prepare for next found.
     }
-
 }

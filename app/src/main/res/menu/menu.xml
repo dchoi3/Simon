@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/gameMode1"
-        android:title="GameMode I"
+        android:title="Pattern Mode (Easy)"
         />
     <item
         android:id="@+id/gameMode2"
-        android:title="GameMode II"
+        android:title="Random Mode (Medium)"
         />
     <item
         android:id="@+id/gameMode3"
-        android:title="GameMode III"
+        android:title="Reverse Mode (Hard)"
         />
     <item
         android:id="@+id/actionRestart"
