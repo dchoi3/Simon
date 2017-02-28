@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -166,9 +167,7 @@ public class GameActivity extends AppCompatActivity
         return index;
     }
 
-    //Pattern for game mode 3 ()
     private void chooseGameMode(){
-
         if(gameMode == 2){
             setVariables();
             toast("Get Ready, Random Mode (Medium)");
@@ -485,9 +484,15 @@ public class GameActivity extends AppCompatActivity
      * seqCompare method does a simple check to see if user choice matches simon's pattern.
      */
     public void seqCompare() {
+        if (gameMode == 3) {
+            Collections.reverse(simonPattern); // reverse pattern to be checked.
+        }
         if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
             Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
             match = true;
+            if (gameMode == 3) {
+                Collections.reverse(simonPattern); // put array back to normal so new additions are in the correct index.
+            }
         } else {
             Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
             match = false;
