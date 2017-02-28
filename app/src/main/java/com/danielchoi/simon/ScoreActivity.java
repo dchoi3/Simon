@@ -221,11 +221,30 @@ public class ScoreActivity extends AppCompatActivity {
         int callingActivity = getIntent().getIntExtra(ACTIVITYKEY, 0);
 
         if(callingActivity == 2000 ){//Home
-            enterUserName();
+            if(madeItintoHighscore()){
+                enterUserName();
+            }else
+            {
+                String tryAgain = "Sorry, try again!";
+                toast(tryAgain);
+            }
+
         }
 
     }
-
+    /**
+     * This will check to see if the user's score made it into the top scores
+     * Return a boolean
+     * true for yes
+     * flase for no
+     */
+    private boolean madeItintoHighscore(){
+        
+     return true;
+    }
+    private void toast(String s){
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    }//Called from anywhere
     /**
      * This sets the view on startup
      * It gets the id of the listview
