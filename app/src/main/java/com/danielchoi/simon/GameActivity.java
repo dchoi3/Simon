@@ -193,37 +193,36 @@ public class GameActivity extends AppCompatActivity
     private void usersTurn(){
         lockButtons = false;
         //Should allow "counts" amount of input here. On click needs to be lock after input
-        if(match){
-            if (choiceCount > 0) { // If user has pressed at least one button.
-                if (choiceCount < simonPattern.size()) {
-                    seqCompare();
-                } else if (choiceCount == simonPattern.size()) {
-                    seqCompare();
-                    if (match) {
-                        choiceCount = 0;
-                        new java.util.Timer().schedule(
-                            new java.util.TimerTask() {
-                                @Override
-                                public void run() {
-                                    simonsTurn();
-                                }
-                            },
-                            2000 // Delay in ms.
-                        );
-                    } else {
-                        // Game Over!
-                        Log.i("Game Over!", "Wrong guess.");
-                    }
+        if (choiceCount > 0) { // If user has pressed at least one button.
+            if (choiceCount < simonPattern.size()) {
+                seqCompare();
+            } else if (choiceCount == simonPattern.size()) {
+                seqCompare();
+                if (match) {
+                    choiceCount = 0;
+                    new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                simonsTurn();
+                            }
+                        },
+                        2000 // Delay in ms.
+                    );
                 } else {
-                    // Guessed too many times.
-                    Log.i("Game Over!", "Too many guesses.");
+                    gameOver("Game Over! Wrong guess.");
                 }
+            } else {
+
+                gameOver("Game Over! Too many guesses.");
             }
-        } else { // match = false; Game Over!
-            // Game Over!
-            Log.i("Game Over!", "Wrong guess.");
         }
     }//Called from FLASH after thread Completes
+
+    private void gameOver(String msg) {
+        choiceCount = 0;
+        toast(msg);
+    }
 
     //*********************************************************************THREADS*
 
