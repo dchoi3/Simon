@@ -129,26 +129,15 @@ public class GameActivity extends AppCompatActivity
                 }else{
                     Log.i("SOUND", "Error cannot load sound status = "+status);
                 }
-
             }
         });
-
         chooseGameMode();
-
     }
 
     //***********************************************************************SIMON*
     //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
     private int patternMode(){// Function that makes simon choose predetermined colors
-        int index;
-            if((count * count) % 11 > 5){
-                index = (count * count * 3) % 4;
-            }else{
-                index = (count * count * count) % 3;
-            }
-        count++;
-        Log.i("Predetermined Mode", ""+index);
-        return index;
+        return predefinedPattern();
     }//Called from simonsTurn
     //Pattern for game mode 2 (Random Pattern: Normal difficulty)
     private int randomMode(){// Function that makes simon choose random colors
@@ -156,10 +145,17 @@ public class GameActivity extends AppCompatActivity
         int index = rand.nextInt(100);
         index = index % 4;
         count++;
-        Log.i("Random Mode", ""+index);
         return index;
     }//Called from simonsTurn
     private int reverseMode(){// Function that sets simons predetermined colors and users chooses in reverse
+        return predefinedPattern();
+    }//Called from simonsTurn
+
+    /**
+     * pattern method calculates the index to create the predetermined pattern.
+     * @return The index calculated by the formula.
+     */
+    public int predefinedPattern(){
         int index;
         if((count * count) % 11 > 5){
             index = (count * count * 3) % 4;
@@ -167,9 +163,9 @@ public class GameActivity extends AppCompatActivity
             index = (count * count * count) % 3;
         }
         count++;
-        Log.i("Reverse Mode", ""+index);
         return index;
-    }//Called from simonsTurn
+    }
+
     //Pattern for game mode 3 ()
     private void chooseGameMode(){
 
@@ -196,7 +192,6 @@ public class GameActivity extends AppCompatActivity
 
     private void play(){
         simonsTurn();
-
     }//Called by onCreate
 
     private void simonsTurn() {
