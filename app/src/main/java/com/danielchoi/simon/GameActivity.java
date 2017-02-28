@@ -232,7 +232,6 @@ public class GameActivity extends AppCompatActivity
 
     private void usersTurn(){
         lockButtons = false;
-        simonsTurn();// For testing code *******************************************************
         //Should allow "counts" amount of input here. On click needs to be lock after input
         if (choiceCount > 0) { // Jump in statement only if user has pressed button.
             if (choiceCount < simonPattern.size()) {
