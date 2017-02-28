@@ -139,7 +139,7 @@ public class GameActivity extends AppCompatActivity
 
     //***********************************************************************SIMON*
     //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
-    private int predeterminedMode(){// Function that makes simon choose predetermined colors
+    private int patternMode(){// Function that makes simon choose predetermined colors
         int index;
             if((count * count) % 11 > 5){
                 index = (count * count * 3) % 4;
@@ -175,19 +175,19 @@ public class GameActivity extends AppCompatActivity
 
         if(gameMode == 2){
             setVariables();
-            toast("Get Ready, Game Mode II");
+            toast("Get Ready, Random Mode (Medium)");
             countDown = new CountDown();
             countDown.execute();
             play();
         }else if(gameMode ==3){
             setVariables();
-            toast("Get Ready, Game Mode III");
+            toast("Get Ready, Reverse Mode (Hard)");
             countDown = new CountDown();
             countDown.execute();
             play();
         }else{
             setVariables();
-            toast("Get Ready, Game Mode I");
+            toast("Get Ready, Pattern Mode (Easy)");
             countDown = new CountDown();
             countDown.execute();
             play();
@@ -212,7 +212,7 @@ public class GameActivity extends AppCompatActivity
             flash = new FlashSimon();
             flash.execute();
         }else{
-            simonPattern.add(predeterminedMode());//add a predetermined pattern: EASY
+            simonPattern.add(patternMode());//add a predetermined pattern: EASY
             flash = new FlashSimon();
             flash.execute();
         }
