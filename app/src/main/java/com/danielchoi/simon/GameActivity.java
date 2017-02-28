@@ -135,25 +135,8 @@ public class GameActivity extends AppCompatActivity
         chooseGameMode();
     }
 
-    //***********************************************************************SIMON*
-    //Pattern for game mode 1 (Predetermined Pattern: EASY difficulty)
-    private int patternMode(){// Function that makes simon choose predetermined colors
-        return predefinedPattern();
-    }//Called from simonsTurn
-    //Pattern for game mode 2 (Random Pattern: Normal difficulty)
-    private int randomMode(){// Function that makes simon choose random colors
-        Random rand = new Random(System.nanoTime());
-        int index = rand.nextInt(100);
-        index = index % 4;
-        count++;
-        return index;
-    }//Called from simonsTurn
-    private int reverseMode(){// Function that sets simons predetermined colors and users chooses in reverse
-        return predefinedPattern();
-    }//Called from simonsTurn
-
     /**
-     * pattern method calculates the index to create the predetermined pattern.
+     * predefinedPattern calculates the index to create the predetermined pattern.
      * @return The index calculated by the formula.
      */
     public int predefinedPattern(){
@@ -163,6 +146,18 @@ public class GameActivity extends AppCompatActivity
         }else{
             index = (count * count * count) % 3;
         }
+        count++;
+        return index;
+    }
+
+    /**
+     * randomMode randomly returns an int to be added to simons pattern.
+     * @return index to be added to simon's pattern.
+     */
+    private int randomMode(){
+        Random rand = new Random(System.nanoTime());
+        int index = rand.nextInt(100);
+        index = index % 4;
         count++;
         return index;
     }
@@ -200,9 +195,9 @@ public class GameActivity extends AppCompatActivity
         if(gameMode == 2){
             simonPattern.add(randomMode());//add a random pattern: NORMAL
         }else if(gameMode ==3){
-            simonPattern.add(reverseMode());//add a predetermined pattern that will be checked in reverse: HARD
+            simonPattern.add(predefinedPattern());//add a predetermined pattern that will be checked in reverse: HARD
         }else{
-            simonPattern.add(patternMode());//add a predetermined pattern: EASY
+            simonPattern.add(predefinedPattern());//add a predetermined pattern: EASY
         }
         flash = new FlashSimon();
         flash.execute();
