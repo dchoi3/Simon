@@ -485,15 +485,13 @@ public class GameActivity extends AppCompatActivity
      * seqCompare method does a simple check to see if user choice matches simon's pattern.
      */
     public void seqCompare() {
-            if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
-                Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
-                match = true;
-            } else {
-                Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
-                match = false;
-                gameOver();
-            }
+        if (simonPattern.elementAt(choiceCount-1).equals(userChoice)) {
+            Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = true;
+        } else {
+            Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount-1) + " user: " + userChoice);
+            match = false;
+            gameOver();
         }
     }
-
 }
