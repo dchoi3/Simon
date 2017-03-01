@@ -31,7 +31,7 @@ public class GameActivity extends AppCompatActivity
 
     // VAR Declaration.
     Vector<Integer> userPattern = new Vector<>(), simonPattern = new Vector<>();
-    private int tempo, gameMode, count, score, flashSpeed, hintCount, userChoice, choiceCount;
+    private int tempo, count, score, flashSpeed, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -41,8 +41,10 @@ public class GameActivity extends AppCompatActivity
     public Typeface customFont;
     public TextView scoreTextView;
     public Vibrator vb;
+    public int gameMode = 1;
     public ImageButton gButton, bButton, yButton, rButton;
     public boolean match;
+
     public static final int activityRef = 2000;
 
     // VAR Initialization.
@@ -82,7 +84,6 @@ public class GameActivity extends AppCompatActivity
 
         findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
         findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
-        findViewById(R.id.setScore_button).setOnClickListener(new SetHighScore());
     }
 
     /**
@@ -101,6 +102,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+
         if (flash != null) {
             flash.cancel(true);
             flash = null;
@@ -175,19 +177,19 @@ public class GameActivity extends AppCompatActivity
     private void chooseGameMode() {
         if (gameMode == 2) {
             setVariables();
-            toast("Get Ready, Random Mode (Medium)");
+            toastHigh("Random Mode (Medium) Points 2x");
             countDown = new CountDown();
             countDown.execute();
             play();
         } else if (gameMode == 3) {
             setVariables();
-            toast("Get Ready, Reverse Mode (Hard)");
+            toastHigh("Reverse Mode (Hard) Points 3x");
             countDown = new CountDown();
             countDown.execute();
             play();
         } else {
             setVariables();
-            toast("Get Ready, Pattern Mode (Easy)");
+            toastHigh("Pattern Mode (Easy)");
             countDown = new CountDown();
             countDown.execute();
             play();
@@ -222,8 +224,13 @@ public class GameActivity extends AppCompatActivity
      */
     private void updateScore() {
         String scoreString;
+        score = score+gameMode;
         if (score < 10) scoreString = "0" + score;
-        else scoreString = String.valueOf(score);
+        else if(score >= 99){
+            score = 99;
+            scoreString = String.valueOf(score);
+            gameOver();
+        }else {scoreString = String.valueOf(score);}
         scoreTextView.setText(scoreString);
     }
 
@@ -236,19 +243,18 @@ public class GameActivity extends AppCompatActivity
         if (choiceCount > 0) {
             if (choiceCount < simonPattern.size()) {
                 seqCompare();
-            } else if (choiceCount == simonPattern.size()) {
+            }else if (choiceCount == simonPattern.size()) {
                 lockButtons = true;
                 seqCompare();
                 if (match) {
                     choiceCount = 0;
-                    new java.util.Timer().schedule(
-                        new java.util.TimerTask() {
-                            @Override
-                            public void run() {
-                                simonsTurn();
-                            }
-                        }, 2000 // Delay in ms.
-                    );
+                    updateScore();
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    simonsTurn();
                 }
             }
         }
@@ -260,8 +266,7 @@ public class GameActivity extends AppCompatActivity
     private void gameOver() {
         choiceCount = 0;
         lockButtons = true;
-        Log.i("gameOver", "Game Over");
-        toast("Wrong Choice. Game Over!");
+        setHighScore();
     }
 
     // THREADS
@@ -380,7 +385,7 @@ public class GameActivity extends AppCompatActivity
          */
         @Override
         protected void onPostExecute(Void aVoid) {
-            updateScore();
+            scoreTextView.setText("00");
         }
     }
 
@@ -410,19 +415,11 @@ public class GameActivity extends AppCompatActivity
     /**
      * SetHighScore records the high scores of a completed game.
      */
-    class SetHighScore implements View.OnClickListener {
-
-        /**
-         * onClick allows user to record their name for their score.
-         */
-        @Override
-        public void onClick(View view) {
+    public void setHighScore(){
             Intent scoreIntent = new Intent(getApplicationContext(), ScoreActivity.class);
             scoreIntent.putExtra("score", score);
             scoreIntent.putExtra("calling-Activity", activityRef);
             startActivity(scoreIntent);
-
-        }
     }
 
     /**
@@ -561,18 +558,22 @@ public class GameActivity extends AppCompatActivity
      */
     public void seqCompare() {
         if (gameMode == 3) {
-            Collections.reverse(simonPattern); // Reverse pattern to be checked.
+            reversePattern();
         }
         if (simonPattern.elementAt(choiceCount - 1).equals(userChoice)) {
             Log.i("Match", " simon: " + simonPattern.elementAt(choiceCount - 1) + " user: " + userChoice);
             match = true;
             if (gameMode == 3) {
-                Collections.reverse(simonPattern); // Reverse pattern again to properly accumulate indexes.
+                reversePattern();
             }
         } else {
             Log.i("No Match", " simon: " + simonPattern.elementAt(choiceCount - 1) + " user: " + userChoice);
             match = false;
             gameOver();
         }
+    }
+
+    private void reversePattern(){
+        Collections.reverse(simonPattern);
     }
 }
