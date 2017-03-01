@@ -31,7 +31,7 @@ public class GameActivity extends AppCompatActivity
 
     // VAR Declaration.
     Vector<Integer> userPattern = new Vector<>(), simonPattern = new Vector<>();
-    private int tempo, count, score, flashSpeed, hintCount, userChoice, choiceCount;
+    private int tempo, count, score, hintCount, userChoice, choiceCount;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
@@ -54,8 +54,7 @@ public class GameActivity extends AppCompatActivity
         hintCount = 3;
         simonPattern.clear();
         userPattern.clear();
-        flashSpeed = 1000;
-        tempo = flashSpeed;
+        tempo = 1000;
         lockButtons = true;
         vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
