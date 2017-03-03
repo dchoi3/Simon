@@ -3,9 +3,9 @@
     <color name="colorPrimary">#707070</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="menuText">#FFFF00</color>
-    <color name="red">#FF0000</color>
-    <color name="blue">#0000FF</color>
+    <color name="menuText">#ffff00</color>
+    <color name="red">#ff0000</color>
+    <color name="blue">#0000ff</color>
     <color name="green">#008000</color>
 
 </resources>

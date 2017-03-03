@@ -13,6 +13,10 @@
         android:title="Reverse Mode (Hard)"
         />
     <item
+        android:id="@+id/actionAbout"
+        android:title="Game Mode Details"
+        />
+    <item
         android:id="@+id/actionRestart"
         android:title="Restart"
         />

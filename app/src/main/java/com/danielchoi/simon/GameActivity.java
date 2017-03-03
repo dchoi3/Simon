@@ -2,6 +2,7 @@ package com.danielchoi.simon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
@@ -31,24 +32,25 @@ public class GameActivity extends AppCompatActivity
 
     // VAR Declaration.
     Vector<Integer> userPattern = new Vector<>(), simonPattern = new Vector<>();
-    private int tempo, count, score, hintCount, userChoice, choiceCount;
+    private int tempo, count, score, hintCount, userChoice, choiceCount, gameMode;
     private int colorButtons[], colorDrawable[], pressedDrawable[], soundID[];
     private FlashSimon flash;
     private CountDown countDown;
     private SoundPool soundPool;
     private Set<Integer> soundsLoaded;
     private boolean lockButtons;
+    private static final String GAMEMODESP = "gamemodesp";
     public Typeface customFont;
-    public TextView scoreTextView;
+    public TextView scoreTextView, turnTextView, modeTextView;
     public Vibrator vb;
-    public int gameMode = 1;
     public ImageButton gButton, bButton, yButton, rButton;
     public boolean match;
-
     public static final int activityRef = 2000;
 
     // VAR Initialization.
     private void setVariables() {
+        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        gameMode = sharedPreferences.getInt(GAMEMODESP,1);
         count = 0;
         score = 0;
         hintCount = 3;
@@ -70,6 +72,11 @@ public class GameActivity extends AppCompatActivity
         customFont = Typeface.createFromAsset(getAssets(), "fonts/digitaldismay.otf");
 
         scoreTextView = (TextView) findViewById(R.id.score_textView);
+        modeTextView = (TextView) findViewById(R.id.gameMode_textView);
+        turnTextView = (TextView) findViewById(R.id.turn_textView);
+
+        modeTextView.setTypeface(customFont);
+        turnTextView.setTypeface(customFont);
         scoreTextView.setTypeface(customFont);
 
         gButton = (ImageButton) findViewById(R.id.green_imageButton);
@@ -83,6 +90,13 @@ public class GameActivity extends AppCompatActivity
 
         findViewById(R.id.hint_imageButton).setVisibility(View.VISIBLE);
         findViewById(R.id.hint_imageButton).setOnClickListener(new HintButtonListener());
+
+        //resetButton Images just incase thread was canceled between flashes
+        for(int x = 0; x < 4; x++) {
+            ImageButton imageButton = (ImageButton) findViewById(colorButtons[x]);
+            imageButton.setImageResource(colorDrawable[x]);
+        }
+
     }
 
     /**
@@ -93,6 +107,7 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         soundsLoaded = new HashSet<Integer>();
+
     }
 
     /**
@@ -102,15 +117,12 @@ public class GameActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        if (flash != null) {
-            flash.cancel(true);
-            flash = null;
-        }
         if (soundPool != null) {
             soundPool.release();
             soundPool = null;
             soundsLoaded.clear();
         }
+        clearThreads();
     }
 
     /**
@@ -174,32 +186,21 @@ public class GameActivity extends AppCompatActivity
      * chooseGameMode determines what game mode is chosen from the menu.
      */
     private void chooseGameMode() {
-        if (gameMode == 2) {
-            setVariables();
-            toastHigh("Random Mode (Medium) Points 2x");
-            countDown = new CountDown();
-            countDown.execute();
-            play();
-        } else if (gameMode == 3) {
-            setVariables();
-            toastHigh("Reverse Mode (Hard) Points 3x");
-            countDown = new CountDown();
-            countDown.execute();
-            play();
-        } else {
-            setVariables();
-            toastHigh("Pattern Mode (Easy)");
-            countDown = new CountDown();
-            countDown.execute();
-            play();
-        }
-    }
+        setVariables();
 
-    /**
-     * play starts the game.
-     */
-    private void play() {
-        simonsTurn();
+        if (gameMode == 2) {
+            setModeTextView("Random Mode");
+            countDown = new CountDown();
+            countDown.execute();
+        } else if (gameMode == 3) {
+            setModeTextView("Reuerse Mode");
+            countDown = new CountDown();
+            countDown.execute();
+        } else {
+            setModeTextView("Pattern Mode");
+            countDown = new CountDown();
+            countDown.execute();
+        }
     }
 
     /**
@@ -317,10 +318,14 @@ public class GameActivity extends AppCompatActivity
          */
         @Override
         protected void onPostExecute(Void aVoid) {
-            toast("Your turn");
+            setTurnTextView("Your turn");
             usersTurn();
         }
 
+        @Override
+        protected void onPreExecute() {
+            setTurnTextView("SiMon's Turn");
+        }
     }
 
     /**
@@ -353,6 +358,7 @@ public class GameActivity extends AppCompatActivity
             String display;
             try {
                 for (int i = 3; i >= 0; i--) {
+                    if(isCancelled()) return null;
                     if (i == 0) {
                         display = "go";
                         cdSound = soundID[5];
@@ -385,8 +391,21 @@ public class GameActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             scoreTextView.setText("00");
+            simonsTurn();
         }
     }
+
+    public void clearThreads(){
+        if(countDown != null){
+            countDown.cancel(true);
+            countDown = null;
+        }
+        if(flash != null){
+            flash.cancel(true);
+            flash = null;
+        }
+    }
+
 
     // Functionality, Utility, Menu
 
@@ -451,15 +470,6 @@ public class GameActivity extends AppCompatActivity
     }
 
     /**
-     * toast is a reusable method for creating multiple toasts.
-     *
-     * @param s The string to be displayed in the toast.
-     */
-    private void toast(String s) {
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
      * toastHigh is a reusable methods for creating multiple toasts that are at the top of the
      * screen.
      *
@@ -470,6 +480,14 @@ public class GameActivity extends AppCompatActivity
         toast.setGravity(Gravity.TOP, 0, 50);
         toast.show();
     }//Called from anywhere
+
+    private void setModeTextView(String s){
+        modeTextView.setText(s);
+    }
+
+    private void setTurnTextView(String s){
+        turnTextView.setText(s);
+    }
 
     /**
      * onTouch determines which button was clicked by the user.
@@ -512,32 +530,46 @@ public class GameActivity extends AppCompatActivity
      */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+        vb.vibrate(10);
+        clearThreads();
+
         if (item.getItemId() == R.id.gameMode1) {
-            vb.vibrate(10);
             gameMode = 1;
+            insertSharedPreference();
             chooseGameMode();
             return true;
         } else if (item.getItemId() == R.id.gameMode2) {
-            vb.vibrate(10);
             gameMode = 2;
+            insertSharedPreference();
             chooseGameMode();
             return true;
         } else if (item.getItemId() == R.id.gameMode3) {
-            vb.vibrate(10);
             gameMode = 3;
+            insertSharedPreference();
             chooseGameMode();
             return true;
+        } else if (item.getItemId() == R.id.actionAbout) {
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
+            return true;
         } else if (item.getItemId() == R.id.actionRestart) {
-            vb.vibrate(10);
             chooseGameMode();
             return true;
         } else if (item.getItemId() == R.id.actionQuit) {
-            vb.vibrate(10);
             Intent aboutIntent = new Intent(this, HomeActivity.class);
             startActivity(aboutIntent);
             return true;
         }
         return false;
+    }
+
+    private void insertSharedPreference(){
+
+        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(GAMEMODESP, gameMode);
+        editor.apply();
+
     }
 
     /**

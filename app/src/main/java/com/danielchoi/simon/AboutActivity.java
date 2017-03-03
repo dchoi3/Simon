@@ -14,7 +14,9 @@ public class AboutActivity extends AppCompatActivity {
         Typeface tf = Typeface.createFromAsset(getAssets(),  "fonts/digitaldismay.otf");
         TextView tv = (TextView) findViewById(R.id.developers);
         TextView fv = (TextView) findViewById(R.id.font);
+        TextView gv = (TextView) findViewById(R.id.gameAbout_TextView);
         tv.setTypeface(tf);
         fv.setTypeface(tf);
+        gv.setTypeface(tf);
     }
 }

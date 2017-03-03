@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_about"
     android:layout_width="match_parent"
@@ -12,94 +13,199 @@
     tools:context="com.danielchoi.simon.AboutActivity"
     android:background="@drawable/background">
 
-    <TextView
-        android:text="deuelopers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
-        android:textAlignment="center"
-        android:id="@+id/developers"
-        android:textSize="40sp"
-        android:textColor="#00FF00" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-    <TextView
-        android:text="Daniel Choi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/daniel"
-        android:textColor="#0000FF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginStart="25sp" />
+            <TextView
+                android:text="@string/gameModesString"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/gameAbout_TextView"
+                android:textSize="40sp"
+                android:textAlignment="center"
+                android:textColor="@color/blue" />
 
-    <TextView
-        android:text="Information Systems \nw/Mobile software technology"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/danielInfo"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="30sp"/>
+            <TextView
+            android:text="@string/patternString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pattern_TextView"
+            android:textColor="@color/green"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="10sp" />
 
-    <TextView
-        android:text="Charles Fannin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/charles"
-        android:textColor="#FF0000"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginStart="25dp"/>
+            <TextView
+                android:text="@string/patternInfoString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/patternInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20sp"/>
 
-    <TextView
-        android:text="Internet and web technology \nw/Mobile software technology"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/charlesInfo"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:paddingBottom="30dp" />
+            <TextView
+                android:text="@string/randomString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/random_TextView"
+                android:textColor="@color/green"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp" />
 
+            <TextView
+                android:text="@string/randomInfoString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/randomInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20sp"/>
 
-    <TextView
-        android:text="John Schmitt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/john"
-        android:textColor="#008000"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginStart="25dp"/>
-    <TextView
-        android:text="Networking\nw/Mobile software technology"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/johnInfo"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:paddingBottom="30dp" />
+            <TextView
+                android:text="@string/reverseString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reverse_TextView"
+                android:textColor="@color/green"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp" />
 
-    <TextView
-        android:text="FonT"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:id="@+id/font"
-        android:textSize="30sp"
-        android:textColor="#00FF00"
-        android:textAlignment="center" />
+            <TextView
+                android:text="@string/reverseInfoString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reverseInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20sp"/>
+            <TextView
+                android:text="@string/noteString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/note_TextView"
+                android:textColor="@color/green"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp" />
 
-    <TextView
-        android:text="Name: Digital Dismay\nDesigner: Andrew McCluskey\nCompany: Nal Games\nUsage: DonationWare"
-        android:layout_width="197dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/fontDescription"/>
+            <TextView
+                android:text="@string/noteInfoString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/noteInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20sp"/>
 
+            <TextView
+                android:text="@string/developersString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:textAlignment="center"
+                android:id="@+id/developers"
+                android:textSize="40sp"
+                android:textColor="@color/blue" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ternion"
+                android:id="@+id/imageView2"
+                android:contentDescription="@string/logoDescription"/>
 
-</LinearLayout>
+            <TextView
+                android:text="@string/danielChoi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/daniel"
+                android:textColor="@color/red"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp" />
+
+            <TextView
+                android:text="@string/danielChoiInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/danielInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20sp"/>
+
+            <TextView
+                android:text="@string/charlesFanin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/charles"
+                android:textColor="#FF0000"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp"/>
+
+            <TextView
+                android:text="@string/charlesFaninInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/charlesInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20sp" />
+
+            <TextView
+                android:text="@string/johnSchmitt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/john"
+                android:textColor="@color/red"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginStart="10sp"/>
+
+            <TextView
+                android:text="@string/johnSchmittInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/johnInfo"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20sp" />
+
+            <TextView
+                android:text="@string/fontString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:id="@+id/font"
+                android:textSize="30sp"
+                android:textAlignment="center"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:text="@string/fontInfo"
+                android:layout_width="208dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/fontDescription"
+                android:layout_marginBottom="20sp"/>
+        </LinearLayout>
+    </ScrollView>
+

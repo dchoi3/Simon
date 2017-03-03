@@ -4,4 +4,23 @@
     <string name="congrats">Congrats!</string>
     <string name ="nameHint">Name</string>
     <string name ="highscore">High Scores</string>
+    <string name ="gameModesString">Game Modes</string>
+    <string name ="patternString">Pattern Mode</string>
+    <string name ="patternInfoString">A predetermined pattern that will always stays the same. Try to memorize all 99!</string>
+    <string name ="randomString">Random Mode</string>
+    <string name ="randomInfoString">The classic Simon game mode. \nYou get double the points!</string>
+    <string name ="reverseString">Reverse Mode</string>
+    <string name ="reverseInfoString">Ready for a challenge? Input the pattern backwards! You get triple the points!</string>
+    <string name ="noteString">Note</string>
+    <string name ="noteInfoString">Leaving the game screen will restart the game!</string>
+    <string name ="developersString">deuelopers</string>
+    <string name ="danielChoi">Daniel Choi</string>
+    <string name ="danielChoiInfo">Information Systems \nw/Mobile software technology"</string>
+    <string name ="charlesFanin">Charles Fannin</string>
+    <string name ="charlesFaninInfo">Internet and web technology \nw/Mobile software technology</string>
+    <string name ="johnSchmitt">John Schmitt</string>
+    <string name ="johnSchmittInfo">Networking\nw/Mobile software technology</string>
+    <string name ="fontString">FonT</string>
+    <string name ="fontInfo">Name: Digital Dismay\nDesigner: Andrew McCluskey\nCompany: Nal Games\nUsage: DonationWare</string>
+    <string name ="logoDescription">House Logo</string>
 </resources>

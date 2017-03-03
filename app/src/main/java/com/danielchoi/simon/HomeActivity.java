@@ -32,7 +32,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         s.setTypeface(tf);
         s.setOnClickListener(this);
 
-
     }
 
     @Override

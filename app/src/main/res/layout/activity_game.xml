@@ -119,5 +119,23 @@
         android:scaleType="fitXY"
         android:elevation="0dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="29dp"
+        android:id="@+id/turn_textView"
+        android:textSize="30sp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameMode_textView"
+        android:textSize="36sp"
+        android:layout_alignBottom="@+id/menu_ImageButton"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

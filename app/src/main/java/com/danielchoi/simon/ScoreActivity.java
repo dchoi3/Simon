@@ -43,7 +43,8 @@ public class ScoreActivity extends AppCompatActivity {
     private List<Scores> scoresList;
     private final String SCORE_FILENAME = "simonScores.txt";
     private final String DELIMITER = "<õ@Scores@õ>";
-    private String name,score, place;
+    private String name,score;
+    private String place = "0";
     private final String ACTIVITYKEY = "calling-Activity";
     private int currentLowestScore, adaptersize;
 
@@ -145,9 +146,7 @@ public class ScoreActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 name = et.getText().toString().trim();
-
                 if(name == "") name = "Player Name";
-
                 setScores();
             }
         })
@@ -171,9 +170,6 @@ public class ScoreActivity extends AppCompatActivity {
      * Calls write Data to save to file
      */
     private void setScores(){
-        int temp = getIntent().getIntExtra("score", 0);
-        score = Integer.toString(temp);
-        place = Integer.toString(adaptersize+1);
         Scores newScore = new Scores(place,name,score);
         scoresList.add(newScore);
         sortScores();
@@ -190,9 +186,10 @@ public class ScoreActivity extends AppCompatActivity {
      */
     private void sortScores(){
 
-        for(int i = 0; i < scoreAdapter.getCount()-1; i++) {
+        int size = scoreAdapter.getCount();
+        for(int i = 0; i < size-1; i++) {
             int max = i;
-            for(int y = i+1; y < scoreAdapter.getCount(); y++){
+            for(int y = i+1; y < size; y++){
                 int val1 = Integer.parseInt(scoresList.get(y).getScore());
                 int val2 = Integer.parseInt(scoresList.get(max).getScore());
 
@@ -203,17 +200,16 @@ public class ScoreActivity extends AppCompatActivity {
 
             String tempScore = scoresList.get(i).getScore();
             String tempName = scoresList.get(i).getName();
-
             scoresList.get(i).setScore(scoresList.get(max).getScore());
             scoresList.get(i).setName(scoresList.get(max).getName());
-            int place = i+1;
-            scoresList.get(i).setPlace(String.valueOf(place));
-
             scoresList.get(max).setScore(tempScore);
             scoresList.get(max).setName(tempName);
-
-
         }//for
+
+        for(int x = 0; x < size; x++){
+            int place = x+1;
+            scoresList.get(x).setPlace(String.valueOf(place));
+        }
 
     }
 
@@ -265,9 +261,14 @@ public class ScoreActivity extends AppCompatActivity {
      */
     private boolean madeItintoHighscore(){
         int s = getIntent().getIntExtra("score", 0);
-        if(s > currentLowestScore && s != 0){
+        int size = scoresList.size();
+
+        if(s >= currentLowestScore && size == 25){
+            scoresList.remove(size);
+            score = Integer.toString(s);
             return true;
-        }else if(scoresList.size() <= 25 && s != 0){
+        }else if(size < 25 && s != 0){
+            score = Integer.toString(s);
             return true;
         }else
             return false;
