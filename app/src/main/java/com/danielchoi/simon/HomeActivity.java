@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,6 +34,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         s.setOnClickListener(this);
 
     }
+
 
     @Override
     public void onClick(View view) {

@@ -231,7 +231,9 @@ public class ScoreActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent aboutIntent = new Intent(this, HomeActivity.class);
+        aboutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(aboutIntent);
+        Log.i("IN score back","====");
     }
 
     /**
@@ -332,7 +334,7 @@ public class ScoreActivity extends AppCompatActivity {
                 scoreTV.setText(sL.get(position).getScore());
             }
 
-return convertView;
+        return convertView;
         }
     }
 
